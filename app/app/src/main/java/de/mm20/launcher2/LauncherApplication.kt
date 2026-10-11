@@ -1,5 +1,6 @@
 package de.mm20.launcher2
 
+import de.mm20.launcher2.ticktick.tickTickModule
 import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
@@ -100,6 +101,7 @@ class LauncherApplication : Application(), CoroutineScope, ImageLoaderFactory {
                     profilesModule,
                     i18nDataModule,
                     feedModule,
+                    tickTickModule,
                 )
             )
         }

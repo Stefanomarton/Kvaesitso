@@ -131,6 +131,7 @@ dependencies {
     implementation(project(":data:contacts"))
     implementation(project(":core:crashreporter"))
     implementation(project(":data:currencies"))
+    implementation(project(":data:ticktick"))
     implementation(project(":data:customattrs"))
     implementation(project(":data:searchable"))
     implementation(project(":data:plugins"))

@@ -12,6 +12,7 @@ import androidx.sqlite.driver.AndroidSQLiteDriver
 import androidx.sqlite.execSQL
 import de.mm20.launcher2.database.daos.PluginDao
 import de.mm20.launcher2.database.daos.ThemeDao
+import de.mm20.launcher2.database.daos.TickTickDao
 import de.mm20.launcher2.database.entities.ColorsEntity
 import de.mm20.launcher2.database.entities.CurrencyEntity
 import de.mm20.launcher2.database.entities.CustomAttributeEntity
@@ -22,6 +23,10 @@ import de.mm20.launcher2.database.entities.PluginEntity
 import de.mm20.launcher2.database.entities.SavedSearchableEntity
 import de.mm20.launcher2.database.entities.SearchActionEntity
 import de.mm20.launcher2.database.entities.ShapesEntity
+import de.mm20.launcher2.database.entities.TickTickCheckinEntity
+import de.mm20.launcher2.database.entities.TickTickHabitEntity
+import de.mm20.launcher2.database.entities.TickTickProjectEntity
+import de.mm20.launcher2.database.entities.TickTickTaskEntity
 import de.mm20.launcher2.database.entities.TransparenciesEntity
 import de.mm20.launcher2.database.entities.TypographyEntity
 import de.mm20.launcher2.database.entities.WidgetEntity
@@ -49,6 +54,7 @@ import de.mm20.launcher2.database.migrations.Migration_30_31
 import de.mm20.launcher2.database.migrations.Migration_31_32
 import de.mm20.launcher2.database.migrations.Migration_32_33
 import de.mm20.launcher2.database.migrations.Migration_33_34
+import de.mm20.launcher2.database.migrations.Migration_34_35
 import de.mm20.launcher2.database.migrations.Migration_6_7
 import de.mm20.launcher2.database.migrations.Migration_7_8
 import de.mm20.launcher2.database.migrations.Migration_8_9
@@ -72,7 +78,11 @@ import java.util.UUID
         ShapesEntity::class,
         TransparenciesEntity::class,
         TypographyEntity::class,
-    ], version = 34, exportSchema = true
+        TickTickProjectEntity::class,
+        TickTickTaskEntity::class,
+        TickTickHabitEntity::class,
+        TickTickCheckinEntity::class,
+    ], version = 35, exportSchema = true
 )
 @ColumnTypeConverters(ComponentNameConverter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -91,6 +101,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun themeDao(): ThemeDao
 
     abstract fun pluginDao(): PluginDao
+
+    abstract fun tickTickDao(): TickTickDao
 
     companion object {
         private var _instance: AppDatabase? = null
@@ -187,6 +199,7 @@ abstract class AppDatabase : RoomDatabase() {
                         Migration_31_32(),
                         Migration_32_33(),
                         Migration_33_34(),
+                        Migration_34_35(),
                     )
                     .setDriver(AndroidSQLiteDriver())
                     .build()
