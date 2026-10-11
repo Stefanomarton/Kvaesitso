@@ -12,6 +12,10 @@ import de.mm20.launcher2.calendar.providers.PluginCalendarEvent
 import de.mm20.launcher2.calendar.providers.PluginCalendarProvider
 import de.mm20.launcher2.calendar.providers.TasksCalendarEvent
 import de.mm20.launcher2.calendar.providers.TasksCalendarProvider
+import de.mm20.launcher2.calendar.providers.TickTickCalendarEvent
+import de.mm20.launcher2.calendar.providers.TickTickCalendarProvider
+import de.mm20.launcher2.ticktick.TickTickRepository
+import kotlinx.coroutines.flow.first
 import de.mm20.launcher2.plugin.PluginRepository
 import de.mm20.launcher2.plugin.config.StorageStrategy
 import de.mm20.launcher2.search.SavableSearchable
@@ -171,4 +175,25 @@ class PluginCalendarEventDeserializer(
         }
     }
 
+}
+class TickTickCalendarEventSerializer : SearchableSerializer {
+    override fun serialize(searchable: SavableSearchable): String {
+        searchable as TickTickCalendarEvent
+        return JSONObject().put("id", searchable.id).toString()
+    }
+
+    override val typePrefix: String
+        get() = TickTickCalendarEvent.Domain
+}
+
+class TickTickCalendarEventDeserializer(
+    private val repository: TickTickRepository,
+) : SearchableDeserializer {
+    override suspend fun deserialize(serialized: String): SavableSearchable? {
+        val id = JSONObject(serialized).getString("id")
+        val task = repository.tasks().first().find { it.id == id } ?: return null
+        return TickTickCalendarProvider(listOf(task), emptyList())
+            .search(null, Long.MIN_VALUE, Long.MAX_VALUE, emptyList(), false, false)
+            .firstOrNull()
+    }
 }

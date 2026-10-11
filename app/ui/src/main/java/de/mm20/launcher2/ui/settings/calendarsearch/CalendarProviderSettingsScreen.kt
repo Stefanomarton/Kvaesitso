@@ -38,7 +38,7 @@ fun CalendarProviderSettingsScreen(providerId: String) {
 
     val pluginState by viewModel.pluginState.collectAsStateWithLifecycle(null)
 
-    val providerAvailable = providerId == "local" || providerId == "tasks.org" || pluginState != null
+    val providerAvailable = providerId == "local" || providerId == "tasks.org" || providerId == "ticktick" || pluginState != null
 
     PreferenceScreen(
         title = pluginState?.plugin?.label ?: stringResource(R.string.preference_search_calendar)
@@ -52,10 +52,12 @@ fun CalendarProviderSettingsScreen(providerId: String) {
                     title =
                         if (providerId == "local") stringResource(R.string.preference_search_calendar)
                         else if (providerId == "tasks.org") stringResource(R.string.preference_search_tasks)
+                        else if (providerId == "ticktick") stringResource(R.string.ticktick)
                         else pluginState?.plugin?.label ?: "",
                     summary =
                         if (providerId == "local") stringResource(R.string.preference_search_local_calendar_summary)
                         else if (providerId == "tasks.org") stringResource(R.string.preference_search_tasks_summary)
+                        else if (providerId == "ticktick") stringResource(R.string.ticktick_search_summary)
                         else (pluginState?.state as? PluginState.Ready)?.text
                             ?: pluginState?.plugin?.description,
                     value = enabled && (pluginState == null || pluginState?.state is PluginState.Ready),

@@ -921,6 +921,7 @@ fun ColumnScope.ConfigureCalendarWidget(
             val pluginName = remember(plugins, group.key) {
                 if (group.key == "local") context.getString(R.string.preference_calendar_calendars)
                 else if (group.key == "tasks.org") context.getString(R.string.preference_search_tasks)
+                else if (group.key == "ticktick") context.getString(R.string.ticktick)
                 else plugins.find { it.authority == group.key }?.label
             }
             if (pluginName != null) {

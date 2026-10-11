@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ticktick">TickTick</string>
+    <string name="ticktick_write_failed">Couldn\'t update TickTick</string>
+    <string name="ticktick_title">Title</string>
+    <string name="ticktick_notes">Notes</string>
+    <string name="ticktick_no_date">No date</string>
+    <string name="ticktick_all_day">All day</string>
+    <string name="ticktick_clear_date">Clear date</string>
+    <string name="ticktick_priority">Priority</string>
+    <string name="ticktick_priority_none">None</string>
+    <string name="ticktick_priority_low">Low</string>
+    <string name="ticktick_priority_medium">Medium</string>
+    <string name="ticktick_priority_high">High</string>
+    <string name="ticktick_save">Save</string>
+    <string name="ticktick_delete">Delete</string>
+    <string name="ticktick_delete_confirm">Delete \"%1$s\"?</string>
+    <string name="ticktick_quick_add">Add to TickTick</string>
+    <string name="ticktick_task_added">Added to TickTick</string>
+    <string name="widget_name_habits">Habits</string>
+    <string name="ticktick_habits_empty">No habits due today</string>
+    <string name="ticktick_not_configured">Set up TickTick in Settings → Integrations</string>
+    <string name="ticktick_streak">%1$d day streak</string>
+    <string name="ticktick_hide_completed">Hide completed habits</string>
+    <string name="ticktick_show_all_habits">Show habits that aren\'t due today</string>
+    <string name="ticktick_set_value">Set today\'s value</string>
+    <string name="ticktick_token">API token</string>
+    <string name="ticktick_token_summary">TickTick web app → Settings → Account → API Token</string>
+    <string name="ticktick_token_set">Token saved</string>
+    <string name="ticktick_sign_out">Remove token</string>
+    <string name="ticktick_sync_now">Sync now</string>
+    <string name="ticktick_last_sync">Last sync: %1$s</string>
+    <string name="ticktick_never_synced">Never synced</string>
+    <string name="ticktick_syncing">Syncing…</string>
+    <string name="ticktick_tasks_error">Tasks: %1$s</string>
+    <string name="ticktick_habits_error">Habits: %1$s</string>
+    <string name="ticktick_default_list">Default list for new tasks</string>
+    <string name="ticktick_integration_description">Show TickTick tasks in the calendar widget and search, tick them off, edit them, add tasks from the search bar and check in habits with the Habits widget.</string>
+    <string name="ticktick_search_summary">Search and show TickTick tasks</string>
+</resources>

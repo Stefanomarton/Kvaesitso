@@ -125,6 +125,7 @@ dependencies {
     implementation(project(":services:tags"))
     implementation(project(":data:weather"))
     implementation(project(":data:calendar"))
+    implementation(project(":data:ticktick"))
     implementation(project(":services:search"))
     implementation(project(":core:preferences"))
     implementation(project(":data:applications"))

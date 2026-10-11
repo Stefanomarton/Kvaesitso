@@ -1,5 +1,16 @@
 package de.mm20.launcher2.ui.launcher.search.calendar
 
+import android.widget.Toast
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.material3.ripple
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.semantics.Role
+import de.mm20.launcher2.calendar.providers.TickTickCalendarEvent
+import kotlinx.coroutines.launch
 import android.content.Context
 import android.icu.text.DateFormat
 import android.icu.text.DateIntervalFormat
@@ -29,7 +40,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -78,6 +88,31 @@ fun CalendarItem(
     val darkMode = LocalDarkTheme.current
     val secondaryColor = MaterialTheme.colorScheme.secondary
 
+    // Optimistic state so the checkbox reacts before the provider re-emits
+    var completedOverride by remember(calendar) { mutableStateOf<Boolean?>(null) }
+    val isCompleted = completedOverride ?: calendar.isCompleted
+    val scope = rememberCoroutineScope()
+    val toggleModifier = if (calendar.canToggleCompleted && isCompleted != null) {
+        Modifier.toggleable(
+            value = isCompleted,
+            role = Role.Checkbox,
+            interactionSource = null,
+            indication = ripple(bounded = false),
+        ) { checked ->
+            completedOverride = checked
+            scope.launch {
+                if (!calendar.setCompleted(checked)) {
+                    completedOverride = null
+                    Toast.makeText(context, R.string.ticktick_write_failed, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    } else Modifier
+    var showEditSheet by remember { mutableStateOf(false) }
+    if (showEditSheet && calendar is TickTickCalendarEvent) {
+        TickTickEditSheet(calendar, onDismiss = { showEditSheet = false })
+    }
+
     val eventColor = Color(
         TonalPalette
             .fromInt(calendar.color ?: secondaryColor.toArgb())
@@ -95,7 +130,7 @@ fun CalendarItem(
                     ) {
                         Icon(
                             painterResource(
-                                when (calendar.isCompleted) {
+                                when (isCompleted) {
                                     true -> R.drawable.check_circle_24px_filled
                                     false -> R.drawable.radio_button_unchecked_24px
                                     null -> R.drawable.circle_24px_filled
@@ -104,6 +139,7 @@ fun CalendarItem(
                             null,
                             modifier = Modifier
                                 .padding(horizontal = 14.dp, vertical = 20.dp)
+                                .then(toggleModifier)
                                 .size(24.dp)
                                 .sharedElement(
                                     rememberSharedContentState("color"),
@@ -124,7 +160,7 @@ fun CalendarItem(
                                 text = calendar.labelOverride ?: calendar.label,
                                 style = MaterialTheme.typography.titleMedium,
                                 maxLines = 1,
-                                textDecoration = if (calendar.isCompleted == true) {
+                                textDecoration = if (isCompleted == true) {
                                     TextDecoration.LineThrough
                                 } else {
                                     TextDecoration.None
@@ -280,6 +316,16 @@ fun CalendarItem(
                         )
                     )
 
+                    if (calendar is TickTickCalendarEvent) {
+                        toolbarActions.add(
+                            DefaultToolbarAction(
+                                label = stringResource(R.string.edit),
+                                icon = R.drawable.edit_24px,
+                                action = { showEditSheet = true }
+                            )
+                        )
+                    }
+
                     val sheetManager = LocalBottomSheetManager.current
                     toolbarActions.add(
                         DefaultToolbarAction(
@@ -308,7 +354,7 @@ fun CalendarItem(
                 ) {
                     Icon(
                         painterResource(
-                            when (calendar.isCompleted) {
+                            when (isCompleted) {
                                 true -> R.drawable.check_circle_24px_filled
                                 false -> R.drawable.radio_button_unchecked_24px
                                 null -> R.drawable.circle_24px_filled
@@ -317,6 +363,7 @@ fun CalendarItem(
                         null,
                         modifier = Modifier
                             .padding(end = 16.dp)
+                            .then(toggleModifier)
                             .size(20.dp)
                             .sharedElement(
                                 rememberSharedContentState("color"),
@@ -333,7 +380,7 @@ fun CalendarItem(
                             text = calendar.labelOverride ?: calendar.label,
                             style = MaterialTheme.typography.titleSmall,
                             maxLines = 1,
-                            textDecoration = if (calendar.isCompleted == true) {
+                            textDecoration = if (isCompleted == true) {
                                 TextDecoration.LineThrough
                             } else {
                                 TextDecoration.None

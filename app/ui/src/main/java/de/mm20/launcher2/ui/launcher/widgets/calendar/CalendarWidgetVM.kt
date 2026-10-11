@@ -16,6 +16,7 @@ import de.mm20.launcher2.search.CalendarEvent
 import de.mm20.launcher2.searchable.PinnedLevel
 import de.mm20.launcher2.searchable.SavableSearchableRepository
 import de.mm20.launcher2.searchable.VisibilityLevel
+import de.mm20.launcher2.ticktick.TickTickRepository
 import de.mm20.launcher2.services.favorites.FavoritesService
 import de.mm20.launcher2.widgets.CalendarWidget
 import de.mm20.launcher2.widgets.CalendarWidgetConfig
@@ -35,6 +36,7 @@ import kotlin.math.max
 class CalendarWidgetVM : ViewModel(), KoinComponent {
 
     private val calendarRepository: CalendarRepository by inject()
+    private val tickTickRepository: TickTickRepository by inject()
     private val favoritesService: FavoritesService by inject()
     private val searchableRepository: SavableSearchableRepository by inject()
 
@@ -43,7 +45,7 @@ class CalendarWidgetVM : ViewModel(), KoinComponent {
     val calendarEvents = mutableStateOf<List<CalendarEvent>>(emptyList())
     val pinnedCalendarEvents =
         favoritesService.getFavorites(
-            includeTypes = listOf("calendar", "tasks.org", "plugin.calendar"),
+            includeTypes = listOf("calendar", "tasks.org", "plugin.calendar", "ticktick"),
             minPinnedLevel = PinnedLevel.AutomaticallySorted,
         ).stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     val nextEvents = mutableStateOf<List<CalendarEvent>>(emptyList())
@@ -153,8 +155,12 @@ class CalendarWidgetVM : ViewModel(), KoinComponent {
         val offset = OffsetDateTime.now().offset
         val dayStart = max(now, date.atStartOfDay().toEpochSecond(offset) * 1000)
         val dayEnd = date.plusDays(1).atStartOfDay().toEpochSecond(offset) * 1000
+        val isToday = date == LocalDate.now()
         var events = upcomingEvents.filter {
-            if (it.isTask && it.isCompleted == true) {
+            if (isToday && it.isTask && it.isCompleted == false && it.endTime < dayStart) {
+                // Overdue open tasks stay visible on today until they are done
+                true
+            } else if (it.isTask && it.isCompleted == true) {
                 it.endTime >= dayStart && it.endTime < dayEnd
             } else {
                 it.endTime >= dayStart && (it.startTime ?: 0L) < dayEnd
@@ -205,6 +211,7 @@ class CalendarWidgetVM : ViewModel(), KoinComponent {
     }
 
     suspend fun onActive() {
+        tickTickRepository.requestSyncIfStale()
         selectDate(LocalDate.now())
         widgetConfig.collectLatest { config ->
             calendarRepository.findMany(
@@ -215,7 +222,7 @@ class CalendarWidgetVM : ViewModel(), KoinComponent {
                     ?: config.legacyExcludedCalendarIds?.map { "local:$it" } ?: emptyList(),
             ).collectLatest { events ->
                 searchableRepository.getKeys(
-                    includeTypes = listOf("calendar", "tasks.org", "plugin.calendar"),
+                    includeTypes = listOf("calendar", "tasks.org", "plugin.calendar", "ticktick"),
                     maxVisibility = VisibilityLevel.SearchOnly,
                     limit = 9999,
                 ).collectLatest { hidden ->

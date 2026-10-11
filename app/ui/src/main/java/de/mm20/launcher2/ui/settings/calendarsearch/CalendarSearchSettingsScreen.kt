@@ -85,6 +85,17 @@ fun CalendarSearchSettingsScreen() {
                         )
                     }
                 }
+                PreferenceWithSwitch(
+                    title = stringResource(R.string.ticktick),
+                    summary = stringResource(R.string.ticktick_search_summary),
+                    switchValue = enabledProviders.contains("ticktick"),
+                    onSwitchChanged = {
+                        viewModel.setProviderEnabled("ticktick", it)
+                    },
+                    onClick = {
+                        backStack.add(CalendarProviderSettingsRoute(providerId = "ticktick"))
+                    }
+                )
                 for (plugin in plugins) {
                     val state = plugin.state
                     GuardedPreference(

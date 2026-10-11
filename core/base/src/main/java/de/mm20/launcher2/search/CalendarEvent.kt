@@ -25,6 +25,17 @@ interface CalendarEvent : SavableSearchable {
     val isTask: Boolean
         get() = isCompleted != null
 
+    /**
+     * True if [setCompleted] is supported, i.e. the launcher can tick this task off directly.
+     */
+    val canToggleCompleted: Boolean
+        get() = false
+
+    /**
+     * @return true if the change was applied
+     */
+    suspend fun setCompleted(completed: Boolean): Boolean = false
+
 
     override val preferDetailsOverLaunch: Boolean
         get() = true
