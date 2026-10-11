@@ -49,6 +49,8 @@ class TickTickRepository internal constructor(
     val syncState: StateFlow<TickTickSyncState> = _syncState
 
     val isConfigured: Flow<Boolean> = settings.token.map { !it.isNullOrBlank() }
+    val isConfiguredNow: Boolean
+        get() = !settings.token.value.isNullOrBlank()
 
     var defaultProjectId: String?
         get() = settings.defaultProjectId

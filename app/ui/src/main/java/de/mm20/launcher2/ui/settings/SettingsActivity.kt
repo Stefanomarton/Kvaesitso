@@ -139,6 +139,8 @@ import de.mm20.launcher2.ui.settings.smartspacer.SmartspacerSettingsScreen
 import de.mm20.launcher2.ui.settings.tags.TagsSettingsRoute
 import de.mm20.launcher2.ui.settings.tags.TagsSettingsScreen
 import de.mm20.launcher2.ui.settings.tasks.TasksIntegrationSettingsRoute
+import de.mm20.launcher2.ui.settings.ticktick.TickTickSettingsRoute
+import de.mm20.launcher2.ui.settings.ticktick.TickTickSettingsScreen
 import de.mm20.launcher2.ui.settings.tasks.TasksIntegrationSettingsScreen
 import de.mm20.launcher2.ui.settings.transparencies.TransparencySchemeSettingsRoute
 import de.mm20.launcher2.ui.settings.transparencies.TransparencySchemeSettingsScreen
@@ -282,6 +284,9 @@ class SettingsActivity : BaseActivity() {
             }
             entry<TasksIntegrationSettingsRoute> {
                 TasksIntegrationSettingsScreen()
+            }
+            entry<TickTickSettingsRoute> {
+                TickTickSettingsScreen()
             }
             entry<BreezyWeatherSettingsRoute> {
                 BreezyWeatherSettingsScreen()

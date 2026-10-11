@@ -117,6 +117,7 @@ import de.mm20.launcher2.widgets.AppsWidget
 import de.mm20.launcher2.widgets.CalendarWidget
 import de.mm20.launcher2.widgets.MusicWidget
 import de.mm20.launcher2.widgets.NotesWidget
+import de.mm20.launcher2.widgets.HabitsWidget
 import de.mm20.launcher2.widgets.WeatherWidget
 import de.mm20.launcher2.widgets.Widget
 import kotlinx.collections.immutable.toImmutableList
@@ -152,6 +153,7 @@ fun ConfigureWidgetSheet(
                 is AppsWidget -> ConfigureFavoritesWidget(widget, onWidgetUpdated)
                 is MusicWidget -> ConfigureMusicWidget(widget, onWidgetUpdated)
                 is NotesWidget -> ConfigureNotesWidget(widget, onWidgetUpdated)
+                is HabitsWidget -> ConfigureHabitsWidget(widget, onWidgetUpdated)
             }
         }
 
@@ -688,6 +690,7 @@ fun ColumnScope.ConfigureAppWidget(
                     is CalendarWidget -> it.copy(id = widget.id)
                     is AppsWidget -> it.copy(id = widget.id)
                     is NotesWidget -> it.copy(id = widget.id)
+                    is HabitsWidget -> it.copy(id = widget.id)
                 }
                 onWidgetUpdated(updatedWidget)
                 replaceWidget = false
@@ -858,6 +861,33 @@ fun ColumnScope.ConfigureAppWidget(
                     contentDescription = null
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun ConfigureHabitsWidget(
+    widget: HabitsWidget,
+    onWidgetUpdated: (HabitsWidget) -> Unit,
+) {
+    OutlinedCard {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            SwitchPreference(
+                title = stringResource(R.string.ticktick_hide_completed),
+                iconPadding = false,
+                value = widget.config.hideCompleted,
+                onValueChanged = {
+                    onWidgetUpdated(widget.copy(config = widget.config.copy(hideCompleted = it)))
+                }
+            )
+            SwitchPreference(
+                title = stringResource(R.string.ticktick_show_all_habits),
+                iconPadding = false,
+                value = widget.config.showNotDue,
+                onValueChanged = {
+                    onWidgetUpdated(widget.copy(config = widget.config.copy(showNotDue = it)))
+                }
+            )
         }
     }
 }

@@ -44,6 +44,8 @@ import de.mm20.launcher2.widgets.CalendarWidget
 import de.mm20.launcher2.widgets.AppsWidget
 import de.mm20.launcher2.widgets.MusicWidget
 import de.mm20.launcher2.widgets.NotesWidget
+import de.mm20.launcher2.widgets.HabitsWidget
+import de.mm20.launcher2.ui.launcher.widgets.habits.HabitsWidget
 import de.mm20.launcher2.widgets.WeatherWidget
 import de.mm20.launcher2.widgets.Widget
 
@@ -145,6 +147,10 @@ fun WidgetItem(
                             widget,
                             onWidgetAdd = onWidgetAdd,
                         )
+                    }
+
+                    is HabitsWidget -> {
+                        HabitsWidget(widget)
                     }
 
                     is AppWidget -> {

@@ -71,6 +71,7 @@ import de.mm20.launcher2.widgets.AppsWidget
 import de.mm20.launcher2.widgets.CalendarWidget
 import de.mm20.launcher2.widgets.MusicWidget
 import de.mm20.launcher2.widgets.NotesWidget
+import de.mm20.launcher2.widgets.HabitsWidget
 import de.mm20.launcher2.widgets.WeatherWidget
 import de.mm20.launcher2.widgets.Widget
 import java.util.UUID
@@ -386,6 +387,7 @@ fun WidgetPickerSheet(
                                     MusicWidget.Type -> MusicWidget(id)
                                     AppsWidget.Type -> AppsWidget(id)
                                     NotesWidget.Type -> NotesWidget(id)
+                                    HabitsWidget.Type -> HabitsWidget(id)
                                     else -> return@clickable
                                 }
                                 onWidgetSelected(widget)
@@ -404,6 +406,7 @@ fun WidgetPickerSheet(
                                         MusicWidget.Type -> R.drawable.music_note_24px
                                         AppsWidget.Type -> R.drawable.apps_24px
                                         NotesWidget.Type -> R.drawable.sticky_note_2_24px
+                                        HabitsWidget.Type -> R.drawable.task_alt_24px
                                         else -> R.drawable.widgets_24px
                                     }
                                 ),

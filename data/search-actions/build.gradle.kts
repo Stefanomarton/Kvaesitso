@@ -55,5 +55,6 @@ dependencies {
     implementation(project(":core:ktx"))
     implementation(project(":core:preferences"))
     implementation(project(":core:crashreporter"))
+    implementation(project(":data:ticktick"))
 
 }

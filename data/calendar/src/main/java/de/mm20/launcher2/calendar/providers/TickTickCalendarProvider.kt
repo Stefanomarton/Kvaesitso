@@ -34,7 +34,7 @@ internal class TickTickCalendarProvider(
             val event = task.toEvent() ?: return@mapNotNull null
             // Overdue open tasks are always included; the widget pins them to today.
             if (event.endTime > to) return@mapNotNull null
-            if (event.endTime < from && (task.completed || query != null)) return@mapNotNull null
+            if (event.endTime < from && task.completed) return@mapNotNull null
             event
         }
     }

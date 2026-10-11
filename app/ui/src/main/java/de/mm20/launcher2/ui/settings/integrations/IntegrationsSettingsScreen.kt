@@ -18,6 +18,7 @@ import de.mm20.launcher2.ui.settings.nextcloud.NextcloudSettingsRoute
 import de.mm20.launcher2.ui.settings.owncloud.OwncloudSettingsRoute
 import de.mm20.launcher2.ui.settings.smartspacer.SmartspacerSettingsRoute
 import de.mm20.launcher2.ui.settings.tasks.TasksIntegrationSettingsRoute
+import de.mm20.launcher2.ui.settings.ticktick.TickTickSettingsRoute
 import de.mm20.launcher2.ui.settings.weather.WeatherIntegrationSettingsRoute
 import de.mm20.launcher2.ui.settings.wikipedia.WikipediaSettingsRoute
 import kotlinx.serialization.Serializable
@@ -90,6 +91,13 @@ fun IntegrationsSettingsScreen() {
                     icon = R.drawable.check_24px_sharp,
                     onClick = {
                         backStack.add(TasksIntegrationSettingsRoute)
+                    }
+                )
+                Preference(
+                    title = stringResource(R.string.ticktick),
+                    icon = R.drawable.task_alt_24px,
+                    onClick = {
+                        backStack.add(TickTickSettingsRoute)
                     }
                 )
                 Preference(

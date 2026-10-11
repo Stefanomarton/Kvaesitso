@@ -16,6 +16,7 @@ import de.mm20.launcher2.searchactions.builders.ScheduleEventActionBuilder
 import de.mm20.launcher2.searchactions.builders.SearchActionBuilder
 import de.mm20.launcher2.searchactions.builders.SetAlarmActionBuilder
 import de.mm20.launcher2.searchactions.builders.ShareActionBuilder
+import de.mm20.launcher2.searchactions.builders.TickTickQuickAddActionBuilder
 import de.mm20.launcher2.searchactions.builders.TimerActionBuilder
 import de.mm20.launcher2.searchactions.builders.WebsearchActionBuilder
 import kotlinx.coroutines.CoroutineScope
@@ -61,6 +62,7 @@ internal class SearchActionRepositoryImpl(
             OpenUrlActionBuilder(context),
             WebsearchActionBuilder(context),
             ShareActionBuilder(context),
+            TickTickQuickAddActionBuilder(context),
         )
 
         return allActions
