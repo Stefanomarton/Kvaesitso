@@ -9,7 +9,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.semantics.Role
-import de.mm20.launcher2.calendar.providers.TickTickCalendarEvent
+import de.mm20.launcher2.calendar.providers.TasksAppCalendarEvent
 import kotlinx.coroutines.launch
 import android.content.Context
 import android.icu.text.DateFormat
@@ -103,14 +103,14 @@ fun CalendarItem(
             scope.launch {
                 if (!calendar.setCompleted(checked)) {
                     completedOverride = null
-                    Toast.makeText(context, R.string.ticktick_write_failed, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.tasksapp_write_failed, Toast.LENGTH_SHORT).show()
                 }
             }
         }
     } else Modifier
     var showEditSheet by remember { mutableStateOf(false) }
-    if (showEditSheet && calendar is TickTickCalendarEvent) {
-        TickTickEditSheet(calendar, onDismiss = { showEditSheet = false })
+    if (showEditSheet && calendar is TasksAppCalendarEvent) {
+        TasksAppEditSheet(calendar, onDismiss = { showEditSheet = false })
     }
 
     val eventColor = Color(
@@ -316,7 +316,7 @@ fun CalendarItem(
                         )
                     )
 
-                    if (calendar is TickTickCalendarEvent) {
+                    if (calendar is TasksAppCalendarEvent) {
                         toolbarActions.add(
                             DefaultToolbarAction(
                                 label = stringResource(R.string.edit),

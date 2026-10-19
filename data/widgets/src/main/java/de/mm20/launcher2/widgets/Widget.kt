@@ -61,7 +61,7 @@ sealed class Widget {
                             ?: NotesWidgetConfig()
                     NotesWidget(entity.id, config)
                 }
-                TickTickTasksWidget.Type -> TickTickTasksWidget(entity.id)
+                TasksAppWidget.Type -> TasksAppWidget(entity.id)
                 ClockWidget.Type -> ClockWidget(entity.id)
 
                 else -> null

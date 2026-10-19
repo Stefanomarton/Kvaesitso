@@ -11,7 +11,7 @@ import de.mm20.launcher2.widgets.ClockWidget
 import de.mm20.launcher2.widgets.AppsWidget
 import de.mm20.launcher2.widgets.MusicWidget
 import de.mm20.launcher2.widgets.NotesWidget
-import de.mm20.launcher2.widgets.TickTickTasksWidget
+import de.mm20.launcher2.widgets.TasksAppWidget
 import de.mm20.launcher2.widgets.Widget
 import de.mm20.launcher2.widgets.WidgetRepository
 import kotlinx.coroutines.Dispatchers
@@ -68,8 +68,8 @@ class WidgetsService(
                 label = context.getString(R.string.widget_name_notes),
             ),
             BuiltInWidgetInfo(
-                type = TickTickTasksWidget.Type,
-                label = context.getString(R.string.widget_name_ticktick_tasks),
+                type = TasksAppWidget.Type,
+                label = context.getString(R.string.widget_name_tasksapp),
             ),
             BuiltInWidgetInfo(
                 type = ClockWidget.Type,

@@ -12,7 +12,7 @@ import androidx.sqlite.driver.AndroidSQLiteDriver
 import androidx.sqlite.execSQL
 import de.mm20.launcher2.database.daos.PluginDao
 import de.mm20.launcher2.database.daos.ThemeDao
-import de.mm20.launcher2.database.daos.TickTickDao
+import de.mm20.launcher2.database.daos.TasksAppDao
 import de.mm20.launcher2.database.entities.ColorsEntity
 import de.mm20.launcher2.database.entities.CurrencyEntity
 import de.mm20.launcher2.database.entities.CustomAttributeEntity
@@ -23,8 +23,8 @@ import de.mm20.launcher2.database.entities.PluginEntity
 import de.mm20.launcher2.database.entities.SavedSearchableEntity
 import de.mm20.launcher2.database.entities.SearchActionEntity
 import de.mm20.launcher2.database.entities.ShapesEntity
-import de.mm20.launcher2.database.entities.TickTickProjectEntity
-import de.mm20.launcher2.database.entities.TickTickTaskEntity
+import de.mm20.launcher2.database.entities.TasksAppProjectEntity
+import de.mm20.launcher2.database.entities.TasksAppTaskEntity
 import de.mm20.launcher2.database.entities.TransparenciesEntity
 import de.mm20.launcher2.database.entities.TypographyEntity
 import de.mm20.launcher2.database.entities.WidgetEntity
@@ -77,8 +77,8 @@ import java.util.UUID
         ShapesEntity::class,
         TransparenciesEntity::class,
         TypographyEntity::class,
-        TickTickProjectEntity::class,
-        TickTickTaskEntity::class,
+        TasksAppProjectEntity::class,
+        TasksAppTaskEntity::class,
     ], version = 36, exportSchema = true
 )
 @ColumnTypeConverters(ComponentNameConverter::class)
@@ -99,7 +99,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun pluginDao(): PluginDao
 
-    abstract fun tickTickDao(): TickTickDao
+    abstract fun tasksAppDao(): TasksAppDao
 
     companion object {
         private var _instance: AppDatabase? = null

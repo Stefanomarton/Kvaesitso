@@ -81,8 +81,8 @@ fun CalendarSearchSettingsScreen() {
                     }
                 }
                 PreferenceWithSwitch(
-                    title = stringResource(R.string.ticktick),
-                    summary = stringResource(R.string.ticktick_search_summary),
+                    title = stringResource(R.string.tasksapp),
+                    summary = stringResource(R.string.tasksapp_search_summary),
                     switchValue = enabledProviders.contains("ticktick"),
                     onSwitchChanged = {
                         viewModel.setProviderEnabled("ticktick", it)

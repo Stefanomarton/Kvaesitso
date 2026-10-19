@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Stefano's self-hosted Tasks app ("Tasks" alone already means the tasks.org integration) -->
+    <string name="tasksapp">Tasks</string>
+    <string name="tasksapp_write_failed">Couldn\'t update Tasks</string>
+    <string name="tasksapp_title">Title</string>
+    <string name="tasksapp_notes">Notes</string>
+    <string name="tasksapp_no_date">No date</string>
+    <string name="tasksapp_all_day">All day</string>
+    <string name="tasksapp_clear_date">Clear date</string>
+    <string name="tasksapp_priority">Priority</string>
+    <string name="tasksapp_priority_none">None</string>
+    <string name="tasksapp_priority_low">Low</string>
+    <string name="tasksapp_priority_medium">Medium</string>
+    <string name="tasksapp_priority_high">High</string>
+    <string name="tasksapp_save">Save</string>
+    <string name="tasksapp_delete">Delete</string>
+    <string name="tasksapp_delete_confirm">Delete \"%1$s\"?</string>
+    <string name="tasksapp_quick_add">Add to Tasks</string>
+    <string name="tasksapp_task_added">Added to Tasks</string>
+    <string name="widget_name_tasksapp">Tasks</string>
+    <string name="tasksapp_tasks_empty">No tasks due today</string>
+    <string name="tasksapp_not_configured">Set up Tasks in Settings → Integrations</string>
+    <string name="tasksapp_url">Server address</string>
+    <string name="tasksapp_email">Email</string>
+    <string name="tasksapp_password">Password</string>
+    <string name="tasksapp_hidden">••••••••</string>
+    <string name="tasksapp_access_id">Cloudflare Access client ID</string>
+    <string name="tasksapp_access_summary">Service token, only if the server is behind Cloudflare Access</string>
+    <string name="tasksapp_access_secret">Cloudflare Access client secret</string>
+    <string name="tasksapp_sign_out">Sign out</string>
+    <string name="tasksapp_sync_now">Sync now</string>
+    <string name="tasksapp_last_sync">Last sync: %1$s</string>
+    <string name="tasksapp_never_synced">Never synced</string>
+    <string name="tasksapp_syncing">Syncing…</string>
+    <string name="tasksapp_default_list">Default list for new tasks</string>
+    <string name="tasksapp_integration_description">Show today\'s tasks from your Tasks server in their own widget and in search, tick them off, edit them, and add tasks from the search bar with the app\'s quick-add syntax (domani alle 9 #lista +tag !2).</string>
+    <string name="tasksapp_search_summary">Search and show tasks from Tasks</string>
+</resources>

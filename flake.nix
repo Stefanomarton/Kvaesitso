@@ -1,5 +1,5 @@
 {
-  description = "Kvaesitso (TickTick fork) dev shell";
+  description = "Kvaesitso (slim fork with the Tasks app) dev shell";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 

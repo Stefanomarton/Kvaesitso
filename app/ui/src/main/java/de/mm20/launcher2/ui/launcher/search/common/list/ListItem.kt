@@ -3,7 +3,7 @@ package de.mm20.launcher2.ui.launcher.search.common.list
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import de.mm20.launcher2.calendar.providers.TickTickCalendarEvent
+import de.mm20.launcher2.calendar.providers.TasksAppCalendarEvent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -138,7 +138,7 @@ fun ListItem(
                             .combinedClickable(
                                 enabled = !showDetails,
                                 onClick = {
-                                    if (item !is TickTickCalendarEvent || !viewModel.launch(context, bounds)) {
+                                    if (item !is TasksAppCalendarEvent || !viewModel.launch(context, bounds)) {
                                         onShowDetails(true)
                                     }
                                 },

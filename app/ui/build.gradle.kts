@@ -124,7 +124,7 @@ dependencies {
     implementation(project(":services:music"))
     implementation(project(":services:tags"))
     implementation(project(":data:calendar"))
-    implementation(project(":data:ticktick"))
+    implementation(project(":data:tasksapp"))
     implementation(project(":services:search"))
     implementation(project(":core:preferences"))
     implementation(project(":data:applications"))

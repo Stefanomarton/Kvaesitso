@@ -72,7 +72,7 @@ import de.mm20.launcher2.widgets.CalendarWidget
 import de.mm20.launcher2.widgets.ClockWidget
 import de.mm20.launcher2.widgets.MusicWidget
 import de.mm20.launcher2.widgets.NotesWidget
-import de.mm20.launcher2.widgets.TickTickTasksWidget
+import de.mm20.launcher2.widgets.TasksAppWidget
 import de.mm20.launcher2.widgets.Widget
 import java.util.UUID
 import kotlin.math.roundToInt
@@ -386,7 +386,7 @@ fun WidgetPickerSheet(
                                     MusicWidget.Type -> MusicWidget(id)
                                     AppsWidget.Type -> AppsWidget(id)
                                     NotesWidget.Type -> NotesWidget(id)
-                                    TickTickTasksWidget.Type -> TickTickTasksWidget(id)
+                                    TasksAppWidget.Type -> TasksAppWidget(id)
                                     ClockWidget.Type -> ClockWidget(id)
                                     else -> return@clickable
                                 }
@@ -405,7 +405,7 @@ fun WidgetPickerSheet(
                                         MusicWidget.Type -> R.drawable.music_note_24px
                                         AppsWidget.Type -> R.drawable.apps_24px
                                         NotesWidget.Type -> R.drawable.sticky_note_2_24px
-                                        TickTickTasksWidget.Type -> R.drawable.check_circle_24px_filled
+                                        TasksAppWidget.Type -> R.drawable.check_circle_24px_filled
                                         ClockWidget.Type -> R.drawable.schedule_24px
                                         else -> R.drawable.widgets_24px
                                     }

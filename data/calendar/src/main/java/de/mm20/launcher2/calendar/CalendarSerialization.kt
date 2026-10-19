@@ -10,9 +10,9 @@ import de.mm20.launcher2.calendar.providers.AndroidCalendarEvent
 import de.mm20.launcher2.calendar.providers.AndroidCalendarProvider
 import de.mm20.launcher2.calendar.providers.TasksCalendarEvent
 import de.mm20.launcher2.calendar.providers.TasksCalendarProvider
-import de.mm20.launcher2.calendar.providers.TickTickCalendarEvent
-import de.mm20.launcher2.calendar.providers.TickTickCalendarProvider
-import de.mm20.launcher2.ticktick.TickTickRepository
+import de.mm20.launcher2.calendar.providers.TasksAppCalendarEvent
+import de.mm20.launcher2.calendar.providers.TasksAppCalendarProvider
+import de.mm20.launcher2.tasksapp.TasksAppRepository
 import kotlinx.coroutines.flow.first
 import de.mm20.launcher2.plugin.config.StorageStrategy
 import de.mm20.launcher2.search.SavableSearchable
@@ -91,23 +91,23 @@ internal data class SerializedCalendarEvent(
     val strategy: StorageStrategy = StorageStrategy.StoreCopy,
 )
 
-class TickTickCalendarEventSerializer : SearchableSerializer {
+class TasksAppCalendarEventSerializer : SearchableSerializer {
     override fun serialize(searchable: SavableSearchable): String {
-        searchable as TickTickCalendarEvent
+        searchable as TasksAppCalendarEvent
         return JSONObject().put("id", searchable.id).toString()
     }
 
     override val typePrefix: String
-        get() = TickTickCalendarEvent.Domain
+        get() = TasksAppCalendarEvent.Domain
 }
 
-class TickTickCalendarEventDeserializer(
-    private val repository: TickTickRepository,
+class TasksAppCalendarEventDeserializer(
+    private val repository: TasksAppRepository,
 ) : SearchableDeserializer {
     override suspend fun deserialize(serialized: String): SavableSearchable? {
         val id = JSONObject(serialized).getString("id")
         val task = repository.tasks().first().find { it.id == id } ?: return null
-        return TickTickCalendarProvider(listOf(task), emptyList())
+        return TasksAppCalendarProvider(listOf(task), emptyList())
             .search(null, Long.MIN_VALUE, Long.MAX_VALUE, emptyList(), false, false)
             .firstOrNull()
     }

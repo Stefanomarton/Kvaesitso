@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.mm20.launcher2.calendar.CalendarRepository
-import de.mm20.launcher2.calendar.providers.TickTickCalendarEvent
+import de.mm20.launcher2.calendar.providers.TasksAppCalendarEvent
 import de.mm20.launcher2.ktx.tryStartActivity
 import de.mm20.launcher2.permissions.PermissionGroup
 import de.mm20.launcher2.permissions.PermissionsManager
@@ -222,8 +222,8 @@ class CalendarWidgetVM : ViewModel(), KoinComponent {
                 ).collectLatest { hidden ->
                     upcomingEvents = events
                         .filter {
-                            // TickTick has its own widget
-                            it !is TickTickCalendarEvent &&
+                            // TasksApp has its own widget
+                            it !is TasksAppCalendarEvent &&
                             !hidden.contains(it.key) && !(!config.completedTasks && it.isCompleted == true)
                         }.sortedBy { it.startTime ?: it.endTime }
                 }

@@ -49,11 +49,11 @@ fun CalendarProviderSettingsScreen(providerId: String) {
                     title =
                         if (providerId == "local") stringResource(R.string.preference_search_calendar)
                         else if (providerId == "tasks.org") stringResource(R.string.preference_search_tasks)
-                        else stringResource(R.string.ticktick),
+                        else stringResource(R.string.tasksapp),
                     summary =
                         if (providerId == "local") stringResource(R.string.preference_search_local_calendar_summary)
                         else if (providerId == "tasks.org") stringResource(R.string.preference_search_tasks_summary)
-                        else stringResource(R.string.ticktick_search_summary),
+                        else stringResource(R.string.tasksapp_search_summary),
                     value = enabled,
                     onValueChanged = { viewModel.setProviderEnabled(providerId, it) }
                 )

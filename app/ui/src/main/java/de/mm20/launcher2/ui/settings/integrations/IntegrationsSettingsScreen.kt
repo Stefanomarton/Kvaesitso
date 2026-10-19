@@ -13,7 +13,7 @@ import de.mm20.launcher2.ui.locals.LocalBackStack
 import de.mm20.launcher2.ui.settings.media.MediaIntegrationSettingsRoute
 import de.mm20.launcher2.ui.settings.smartspacer.SmartspacerSettingsRoute
 import de.mm20.launcher2.ui.settings.tasks.TasksIntegrationSettingsRoute
-import de.mm20.launcher2.ui.settings.ticktick.TickTickSettingsRoute
+import de.mm20.launcher2.ui.settings.tasksapp.TasksAppSettingsRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -41,10 +41,10 @@ fun IntegrationsSettingsScreen() {
                     }
                 )
                 Preference(
-                    title = stringResource(R.string.ticktick),
+                    title = stringResource(R.string.tasksapp),
                     icon = R.drawable.task_alt_24px,
                     onClick = {
-                        backStack.add(TickTickSettingsRoute)
+                        backStack.add(TasksAppSettingsRoute)
                     }
                 )
                 if (isAtLeastApiLevel(29) && FeatureFlags.smartspacerIntegration) {

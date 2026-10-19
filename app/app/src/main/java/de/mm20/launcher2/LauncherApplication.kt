@@ -1,6 +1,6 @@
 package de.mm20.launcher2
 
-import de.mm20.launcher2.ticktick.tickTickModule
+import de.mm20.launcher2.tasksapp.tasksAppModule
 import android.app.Application
 import androidx.work.WorkManager
 import coil.ImageLoader
@@ -84,7 +84,7 @@ class LauncherApplication : Application(), CoroutineScope, ImageLoaderFactory {
                     backupModule,
                     profilesModule,
                     i18nDataModule,
-                    tickTickModule,
+                    tasksAppModule,
                 )
             )
         }

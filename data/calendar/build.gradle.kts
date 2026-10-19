@@ -53,7 +53,7 @@ dependencies {
     implementation(project(":core:base"))
     implementation(project(":core:permissions"))
     implementation(project(":core:preferences"))
-    implementation(project(":data:ticktick"))
+    implementation(project(":data:tasksapp"))
     implementation(project(":libs:material-color-utilities"))
 
 }

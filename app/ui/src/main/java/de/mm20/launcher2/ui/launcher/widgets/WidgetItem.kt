@@ -46,8 +46,8 @@ import de.mm20.launcher2.ui.launcher.widgets.clock.ConfigureClockWidgetSheet
 import de.mm20.launcher2.widgets.AppsWidget
 import de.mm20.launcher2.widgets.MusicWidget
 import de.mm20.launcher2.widgets.NotesWidget
-import de.mm20.launcher2.widgets.TickTickTasksWidget
-import de.mm20.launcher2.ui.launcher.widgets.ticktick.TickTickTasksWidget
+import de.mm20.launcher2.widgets.TasksAppWidget
+import de.mm20.launcher2.ui.launcher.widgets.tasksapp.TasksAppWidget
 import de.mm20.launcher2.widgets.Widget
 
 @Composable
@@ -147,8 +147,8 @@ fun WidgetItem(
                         )
                     }
 
-                    is TickTickTasksWidget -> {
-                        TickTickTasksWidget(widget)
+                    is TasksAppWidget -> {
+                        TasksAppWidget(widget)
                     }
 
                     is ClockWidget -> {

@@ -2,7 +2,7 @@ package de.mm20.launcher2.calendar
 
 import de.mm20.launcher2.calendar.providers.AndroidCalendarEvent
 import de.mm20.launcher2.calendar.providers.TasksCalendarEvent
-import de.mm20.launcher2.calendar.providers.TickTickCalendarEvent
+import de.mm20.launcher2.calendar.providers.TasksAppCalendarEvent
 import de.mm20.launcher2.search.CalendarEvent
 import de.mm20.launcher2.search.SearchableDeserializer
 import de.mm20.launcher2.search.SearchableRepository
@@ -15,5 +15,5 @@ val calendarModule = module {
     factory<CalendarRepository> { CalendarRepositoryImpl(androidContext(), get(), get(), get()) }
     factory<SearchableDeserializer>(named(AndroidCalendarEvent.Domain)) { AndroidCalendarEventDeserializer(androidContext()) }
     factory<SearchableDeserializer>(named(TasksCalendarEvent.Domain)) { TasksCalendarEventDeserializer(androidContext()) }
-    factory<SearchableDeserializer>(named(TickTickCalendarEvent.Domain)) { TickTickCalendarEventDeserializer(get()) }
+    factory<SearchableDeserializer>(named(TasksAppCalendarEvent.Domain)) { TasksAppCalendarEventDeserializer(get()) }
 }

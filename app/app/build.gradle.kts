@@ -130,7 +130,7 @@ dependencies {
     implementation(project(":data:calendar"))
     implementation(project(":data:contacts"))
     implementation(project(":core:crashreporter"))
-    implementation(project(":data:ticktick"))
+    implementation(project(":data:tasksapp"))
     implementation(project(":data:customattrs"))
     implementation(project(":data:searchable"))
     implementation(project(":data:themes"))
