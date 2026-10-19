@@ -115,6 +115,7 @@ import de.mm20.launcher2.ui.settings.SettingsActivity
 import de.mm20.launcher2.widgets.AppWidget
 import de.mm20.launcher2.widgets.AppsWidget
 import de.mm20.launcher2.widgets.CalendarWidget
+import de.mm20.launcher2.widgets.ClockWidget
 import de.mm20.launcher2.widgets.MusicWidget
 import de.mm20.launcher2.widgets.NotesWidget
 import de.mm20.launcher2.widgets.TickTickTasksWidget
@@ -152,6 +153,7 @@ fun ConfigureWidgetSheet(
                 is MusicWidget -> ConfigureMusicWidget(widget, onWidgetUpdated)
                 is NotesWidget -> ConfigureNotesWidget(widget, onWidgetUpdated)
                 is TickTickTasksWidget -> {}
+                is ClockWidget -> {}
             }
         }
 
@@ -635,6 +637,7 @@ fun ColumnScope.ConfigureAppWidget(
                     is AppsWidget -> it.copy(id = widget.id)
                     is NotesWidget -> it.copy(id = widget.id)
                     is TickTickTasksWidget -> it.copy(id = widget.id)
+                    is ClockWidget -> it.copy(id = widget.id)
                 }
                 onWidgetUpdated(updatedWidget)
                 replaceWidget = false

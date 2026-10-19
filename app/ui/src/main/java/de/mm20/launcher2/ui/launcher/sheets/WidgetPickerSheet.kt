@@ -69,6 +69,7 @@ import de.mm20.launcher2.widgets.AppWidget
 import de.mm20.launcher2.widgets.AppWidgetConfig
 import de.mm20.launcher2.widgets.AppsWidget
 import de.mm20.launcher2.widgets.CalendarWidget
+import de.mm20.launcher2.widgets.ClockWidget
 import de.mm20.launcher2.widgets.MusicWidget
 import de.mm20.launcher2.widgets.NotesWidget
 import de.mm20.launcher2.widgets.TickTickTasksWidget
@@ -386,6 +387,7 @@ fun WidgetPickerSheet(
                                     AppsWidget.Type -> AppsWidget(id)
                                     NotesWidget.Type -> NotesWidget(id)
                                     TickTickTasksWidget.Type -> TickTickTasksWidget(id)
+                                    ClockWidget.Type -> ClockWidget(id)
                                     else -> return@clickable
                                 }
                                 onWidgetSelected(widget)
@@ -404,6 +406,7 @@ fun WidgetPickerSheet(
                                         AppsWidget.Type -> R.drawable.apps_24px
                                         NotesWidget.Type -> R.drawable.sticky_note_2_24px
                                         TickTickTasksWidget.Type -> R.drawable.check_circle_24px_filled
+                                        ClockWidget.Type -> R.drawable.schedule_24px
                                         else -> R.drawable.widgets_24px
                                     }
                                 ),

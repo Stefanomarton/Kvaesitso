@@ -7,6 +7,7 @@ import android.content.pm.LauncherApps
 import android.os.Build
 import androidx.core.content.getSystemService
 import de.mm20.launcher2.widgets.CalendarWidget
+import de.mm20.launcher2.widgets.ClockWidget
 import de.mm20.launcher2.widgets.AppsWidget
 import de.mm20.launcher2.widgets.MusicWidget
 import de.mm20.launcher2.widgets.NotesWidget
@@ -69,6 +70,10 @@ class WidgetsService(
             BuiltInWidgetInfo(
                 type = TickTickTasksWidget.Type,
                 label = context.getString(R.string.widget_name_ticktick_tasks),
+            ),
+            BuiltInWidgetInfo(
+                type = ClockWidget.Type,
+                label = context.getString(R.string.preference_screen_clockwidget),
             ),
         )
     }

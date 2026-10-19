@@ -40,6 +40,9 @@ import de.mm20.launcher2.ui.launcher.widgets.notes.NotesWidget
 import de.mm20.launcher2.ui.theme.transparency.transparency
 import de.mm20.launcher2.widgets.AppWidget
 import de.mm20.launcher2.widgets.CalendarWidget
+import de.mm20.launcher2.widgets.ClockWidget
+import de.mm20.launcher2.ui.launcher.widgets.clock.ClockWidget
+import de.mm20.launcher2.ui.launcher.widgets.clock.ConfigureClockWidgetSheet
 import de.mm20.launcher2.widgets.AppsWidget
 import de.mm20.launcher2.widgets.MusicWidget
 import de.mm20.launcher2.widgets.NotesWidget
@@ -66,7 +69,7 @@ fun WidgetItem(
     val elevation by animateDpAsState(if (isDragged) 8.dp else 0.dp)
 
     val backgroundOpacity by animateFloatAsState(
-        if (widget is AppWidget && !widget.config.background && !editMode) 0f else MaterialTheme.transparency.surface,
+        if ((widget is AppWidget && !widget.config.background || widget is ClockWidget) && !editMode) 0f else MaterialTheme.transparency.surface,
         label = "widgetCardBackgroundOpacity",
     )
 
@@ -148,6 +151,10 @@ fun WidgetItem(
                         TickTickTasksWidget(widget)
                     }
 
+                    is ClockWidget -> {
+                        ClockWidget(fillScreenHeight = false)
+                    }
+
                     is AppWidget -> {
                         AppWidget(
                             widget,
@@ -159,10 +166,14 @@ fun WidgetItem(
             }
         }
     }
-    ConfigureWidgetSheet(
-        expanded = configure,
-        widget = widget,
-        onWidgetUpdated = onWidgetUpdate,
-        onDismiss = { configure = false },
-    )
+    if (widget is ClockWidget) {
+        ConfigureClockWidgetSheet(expanded = configure, onDismiss = { configure = false })
+    } else {
+        ConfigureWidgetSheet(
+            expanded = configure,
+            widget = widget,
+            onWidgetUpdated = onWidgetUpdate,
+            onDismiss = { configure = false },
+        )
+    }
 }

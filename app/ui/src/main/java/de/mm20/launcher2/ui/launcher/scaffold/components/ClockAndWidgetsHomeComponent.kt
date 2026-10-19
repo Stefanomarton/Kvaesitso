@@ -43,6 +43,9 @@ import de.mm20.launcher2.ui.R
 import de.mm20.launcher2.ui.ktx.toDp
 import de.mm20.launcher2.ui.launcher.scaffold.LauncherScaffoldState
 import de.mm20.launcher2.ui.launcher.widgets.WidgetColumn
+import de.mm20.launcher2.ui.launcher.widgets.WidgetsVM
+import androidx.lifecycle.viewmodel.compose.viewModel
+import de.mm20.launcher2.widgets.ClockWidget
 import de.mm20.launcher2.ui.launcher.widgets.clock.ClockWidget
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -79,6 +82,14 @@ internal object ClockAndWidgetsHomeComponent : ScaffoldComponent() {
 
         if (fillHeight == null) return
 
+        val parentId = WidgetScreenTarget.Default.id.toString()
+        val widgetsVM: WidgetsVM = viewModel(
+            key = "widgets-column-$parentId",
+            factory = WidgetsVM.Factory(parentId),
+        )
+        val widgets by widgetsVM.widgets.collectAsState()
+        val pinnedClock = widgets.none { it is ClockWidget }
+
         val topPadding by animateDpAsState(if (editMode) 80.dp else 0.dp)
         val previousScroll = remember { mutableIntStateOf(scrollState.value) }
 
@@ -106,26 +117,28 @@ internal object ClockAndWidgetsHomeComponent : ScaffoldComponent() {
                 else 0.dp
             )
 
-            ClockWidget(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    then if (fillHeight == true) {
-                        Modifier
-                            .padding(bottom = bottomPadding)
-                            .height(state.size.height.toDp() - insets.calculateTopPadding() - insets.calculateBottomPadding())
-                } else Modifier,
-                editMode = editMode,
-                fillScreenHeight = fillHeight == true,
-            )
+            if (pinnedClock) {
+                ClockWidget(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        then if (fillHeight == true) {
+                            Modifier
+                                .padding(bottom = bottomPadding)
+                                .height(state.size.height.toDp() - insets.calculateTopPadding() - insets.calculateBottomPadding())
+                    } else Modifier,
+                    editMode = editMode,
+                    fillScreenHeight = fillHeight == true,
+                )
+            }
             WidgetColumn(
                 modifier = Modifier
-                    .padding(top = 16.dp),
+                    .padding(top = if (pinnedClock) 16.dp else 0.dp),
                 editMode = editMode,
                 onEditModeChange = {
                     scope.launch { state.lock(hideSearchBar = true) }
                     editMode = it
                 },
-                parentId = WidgetScreenTarget.Default.id.toString(),
+                parentId = parentId,
             )
         }
         if (editMode) {
