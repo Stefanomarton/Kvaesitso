@@ -5,12 +5,13 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import de.mm20.launcher2.ticktick.api.TasksAccount
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.io.File
 
 /**
- * Personal API token and small integration settings, encrypted at rest.
+ * Tasks server account, login token and small integration settings, encrypted at rest.
  */
 internal class TickTickSettings(private val context: Context) {
 
@@ -21,29 +22,53 @@ internal class TickTickSettings(private val context: Context) {
             val masterKey = MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
             return EncryptedSharedPreferences.create(
                 context,
-                "ticktick",
+                "tasks",
                 masterKey,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )
         } catch (e: Exception) {
             if (!catchErrors) throw e
-            File(context.filesDir, "../shared_prefs/ticktick.xml").delete()
+            File(context.filesDir, "../shared_prefs/tasks.xml").delete()
             return create(false)
         }
     }
 
-    private val _token = MutableStateFlow<String?>(null)
-    val token: StateFlow<String?>
+    private val _account = MutableStateFlow<TasksAccount?>(null)
+    val account: StateFlow<TasksAccount?>
         get() {
-            if (_token.value == null) _token.value = prefs.getString("token", null)
-            return _token
+            if (_account.value == null) _account.value = prefs.getString("url", null)?.let {
+                TasksAccount(
+                    url = it,
+                    email = prefs.getString("email", "")!!,
+                    password = prefs.getString("password", "")!!,
+                    accessId = prefs.getString("access_id", "")!!,
+                    accessSecret = prefs.getString("access_secret", "")!!,
+                )
+            }
+            return _account
         }
 
-    fun setToken(value: String?) {
-        prefs.edit { if (value == null) remove("token") else putString("token", value) }
-        _token.value = value
+    fun setAccount(value: TasksAccount?) {
+        prefs.edit {
+            remove("token")
+            if (value == null) {
+                listOf("url", "email", "password", "access_id", "access_secret").forEach { remove(it) }
+            } else {
+                putString("url", value.url)
+                putString("email", value.email)
+                putString("password", value.password)
+                putString("access_id", value.accessId)
+                putString("access_secret", value.accessSecret)
+            }
+        }
+        _account.value = value
     }
+
+    /** PocketBase auth token; renewed by logging in again when it expires */
+    var token: String?
+        get() = prefs.getString("token", null)
+        set(value) = prefs.edit { putString("token", value) }
 
     var defaultProjectId: String?
         get() = prefs.getString("default_project", null)

@@ -1,14 +1,14 @@
 package de.mm20.launcher2.calendar.providers
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import androidx.core.net.toUri
 import de.mm20.launcher2.calendar.TickTickCalendarEventSerializer
-import de.mm20.launcher2.ktx.tryStartActivity
 import de.mm20.launcher2.search.CalendarEvent
 import de.mm20.launcher2.search.SearchableSerializer
 import de.mm20.launcher2.ticktick.TickTickRepository
+import de.mm20.launcher2.ticktick.TickTickTask
+import de.mm20.launcher2.ticktick.localDateIn
+import java.time.ZoneId
 import org.koin.core.context.GlobalContext
 
 data class TickTickCalendarEvent(
@@ -44,13 +44,9 @@ data class TickTickCalendarEvent(
         return this.copy(labelOverride = label)
     }
 
+    /** Opens the Tasks app on the task's list. */
     override fun launch(context: Context, options: Bundle?): Boolean {
-        val app = context.packageManager.getLaunchIntentForPackage(TickTickPackage)
-            ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        if (app != null && context.tryStartActivity(app, options)) return true
-        val web = Intent(Intent.ACTION_VIEW, "https://ticktick.com/webapp/#p/$projectId/tasks/$id".toUri())
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        return context.tryStartActivity(web, options)
+        return GlobalContext.get().get<TickTickRepository>().openApp(context, "list/$projectId", options)
     }
 
     override fun getSerializer(): SearchableSerializer {
@@ -59,6 +55,26 @@ data class TickTickCalendarEvent(
 
     companion object {
         const val Domain = "ticktick"
-        private const val TickTickPackage = "com.ticktick.task"
     }
+}
+
+fun TickTickTask.toCalendarEvent(): TickTickCalendarEvent? {
+    val due = dueDate ?: return null
+    val end = if (isAllDay) {
+        localDateIn(due, timeZone).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() - 1
+    } else due
+    return TickTickCalendarEvent(
+        id = id,
+        projectId = projectId,
+        label = title,
+        color = projectColor,
+        startTime = null,
+        endTime = end,
+        allDay = isAllDay,
+        isCompleted = completed,
+        description = content,
+        calendarName = projectName,
+        priority = priority,
+        tags = tags,
+    )
 }

@@ -59,7 +59,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 private val priorities = listOf(0 to R.string.ticktick_priority_none, 1 to R.string.ticktick_priority_low,
-    3 to R.string.ticktick_priority_medium, 5 to R.string.ticktick_priority_high)
+    2 to R.string.ticktick_priority_medium, 3 to R.string.ticktick_priority_high)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

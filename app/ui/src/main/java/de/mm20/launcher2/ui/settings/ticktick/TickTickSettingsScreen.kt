@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import de.mm20.launcher2.ticktick.TickTickRepository
+import de.mm20.launcher2.ticktick.api.TasksAccount
 import de.mm20.launcher2.ui.R
 import de.mm20.launcher2.ui.component.Banner
 import de.mm20.launcher2.ui.component.preferences.ListPreference
@@ -38,6 +39,17 @@ fun TickTickSettingsScreen() {
     val syncState by repository.syncState.collectAsStateWithLifecycle()
     val projects by remember { repository.projects() }.collectAsStateWithLifecycle(emptyList())
     var defaultProject by remember { mutableStateOf(repository.defaultProjectId) }
+    // Saved as soon as address, email and password are all filled in
+    var draft by remember {
+        mutableStateOf(repository.account.value ?: TasksAccount("https://tasks.marton.dev", "", "", "", ""))
+    }
+    fun edit(account: TasksAccount) {
+        draft = account
+        if (account.url.isNotBlank() && account.email.isNotBlank() && account.password.isNotBlank()) {
+            repository.setAccount(account)
+        }
+    }
+    val hidden = stringResource(R.string.ticktick_hidden)
 
     PreferenceScreen(title = stringResource(R.string.ticktick)) {
         item {
@@ -50,18 +62,41 @@ fun TickTickSettingsScreen() {
                         .padding(16.dp),
                 )
                 TextPreference(
-                    title = stringResource(R.string.ticktick_token),
+                    title = stringResource(R.string.ticktick_url),
+                    value = draft.url,
+                    onValueChanged = { edit(draft.copy(url = it.trim())) },
+                )
+                TextPreference(
+                    title = stringResource(R.string.ticktick_email),
+                    value = draft.email,
+                    onValueChanged = { edit(draft.copy(email = it.trim())) },
+                )
+                TextPreference(
+                    title = stringResource(R.string.ticktick_password),
                     value = "",
-                    summary = stringResource(
-                        if (configured) R.string.ticktick_token_set else R.string.ticktick_token_summary
-                    ),
-                    onValueChanged = { repository.setToken(it) },
+                    summary = if (draft.password.isEmpty()) null else hidden,
+                    onValueChanged = { edit(draft.copy(password = it)) },
+                )
+                TextPreference(
+                    title = stringResource(R.string.ticktick_access_id),
+                    value = draft.accessId,
+                    summary = stringResource(R.string.ticktick_access_summary),
+                    onValueChanged = { edit(draft.copy(accessId = it.trim())) },
+                )
+                TextPreference(
+                    title = stringResource(R.string.ticktick_access_secret),
+                    value = "",
+                    summary = if (draft.accessSecret.isEmpty()) null else hidden,
+                    onValueChanged = { edit(draft.copy(accessSecret = it.trim())) },
                 )
                 if (configured) {
                     Preference(
                         title = stringResource(R.string.ticktick_sign_out),
                         icon = R.drawable.logout_20px,
-                        onClick = { repository.setToken(null) },
+                        onClick = {
+                            repository.setAccount(null)
+                            draft = draft.copy(password = "", accessSecret = "")
+                        },
                     )
                 }
             }
@@ -82,8 +117,7 @@ fun TickTickSettingsScreen() {
                                     DateUtils.getRelativeTimeSpanString(syncState.lastSync).toString()
                                 )
                             },
-                            syncState.tasksError?.let { stringResource(R.string.ticktick_tasks_error, it) },
-                            syncState.habitsError?.let { stringResource(R.string.ticktick_habits_error, it) },
+                            syncState.error,
                         ).joinToString("\n"),
                         onClick = { scope.launch { repository.sync() } },
                     )

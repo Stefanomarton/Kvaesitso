@@ -28,26 +28,3 @@ data class TickTickTaskEntity(
     val tags: String?,
     val sortOrder: Long,
 )
-
-@Entity(tableName = "TickTickHabit")
-data class TickTickHabitEntity(
-    @PrimaryKey val id: String,
-    val name: String,
-    val iconRes: String?,
-    val color: Int?,
-    val sortOrder: Long,
-    val type: String,
-    val goal: Double,
-    val step: Double,
-    val unit: String?,
-    val repeatRule: String?,
-)
-
-@Entity(tableName = "TickTickCheckin", primaryKeys = ["habitId", "stamp"])
-data class TickTickCheckinEntity(
-    val habitId: String,
-    val stamp: Int,
-    val value: Double,
-    val goal: Double,
-    val status: Int,
-)

@@ -309,7 +309,7 @@ fun CalendarWidget(
 }
 
 @Composable
-private fun Info(
+internal fun Info(
     text: String,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,

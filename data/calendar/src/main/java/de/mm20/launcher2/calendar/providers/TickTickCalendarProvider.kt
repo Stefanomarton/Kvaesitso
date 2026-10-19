@@ -4,12 +4,9 @@ import de.mm20.launcher2.search.CalendarEvent
 import de.mm20.launcher2.search.calendar.CalendarListType
 import de.mm20.launcher2.ticktick.TickTickProject
 import de.mm20.launcher2.ticktick.TickTickTask
-import de.mm20.launcher2.ticktick.localDateIn
-import java.time.LocalDate
-import java.time.ZoneId
 
 /**
- * Filters a snapshot of the local TickTick cache; never touches the network.
+ * Filters a snapshot of the local Tasks cache; never touches the network.
  * ponytail: tasks without a due date are not shown, CalendarEvent needs an end time.
  */
 internal class TickTickCalendarProvider(
@@ -31,8 +28,8 @@ internal class TickTickCalendarProvider(
             if (task.projectId in excludedCalendars) return@mapNotNull null
             if (query != null && !task.title.contains(query, ignoreCase = true)) return@mapNotNull null
             if (excludeAllDayEvents && task.isAllDay) return@mapNotNull null
-            val event = task.toEvent() ?: return@mapNotNull null
-            // Overdue open tasks are always included; the widget pins them to today.
+            val event = task.toCalendarEvent() ?: return@mapNotNull null
+            // Overdue open tasks are always included so search can find them.
             if (event.endTime > to) return@mapNotNull null
             if (event.endTime < from && task.completed) return@mapNotNull null
             event
@@ -44,35 +41,11 @@ internal class TickTickCalendarProvider(
             CalendarList(
                 id = "$namespace:${it.id}",
                 name = it.name,
-                owner = "TickTick",
+                owner = "Tasks",
                 color = it.color ?: 0,
                 types = listOf(CalendarListType.Tasks),
                 providerId = namespace,
             )
         }
     }
-
-    private fun TickTickTask.toEvent(): TickTickCalendarEvent? {
-        val due = dueDate ?: return null
-        val end = if (isAllDay) {
-            localDateIn(due, timeZone).endOfDay()
-        } else due
-        return TickTickCalendarEvent(
-            id = id,
-            projectId = projectId,
-            label = title,
-            color = projectColor,
-            startTime = null,
-            endTime = end,
-            allDay = isAllDay,
-            isCompleted = completed,
-            description = content,
-            calendarName = projectName,
-            priority = priority,
-            tags = tags,
-        )
-    }
-
-    private fun LocalDate.endOfDay(): Long =
-        plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() - 1
 }

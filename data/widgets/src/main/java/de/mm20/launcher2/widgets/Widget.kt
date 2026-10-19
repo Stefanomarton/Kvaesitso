@@ -67,11 +67,7 @@ sealed class Widget {
                             ?: NotesWidgetConfig()
                     NotesWidget(entity.id, config)
                 }
-                HabitsWidget.Type -> HabitsWidget(
-                    entity.id,
-                    Json.decodeFromStringOrNull(entity.config?.takeIf { it.isNotBlank() })
-                        ?: HabitsWidgetConfig(),
-                )
+                TickTickTasksWidget.Type -> TickTickTasksWidget(entity.id)
 
                 else -> null
             }

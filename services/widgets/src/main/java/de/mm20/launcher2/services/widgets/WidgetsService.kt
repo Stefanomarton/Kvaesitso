@@ -10,7 +10,7 @@ import de.mm20.launcher2.widgets.CalendarWidget
 import de.mm20.launcher2.widgets.AppsWidget
 import de.mm20.launcher2.widgets.MusicWidget
 import de.mm20.launcher2.widgets.NotesWidget
-import de.mm20.launcher2.widgets.HabitsWidget
+import de.mm20.launcher2.widgets.TickTickTasksWidget
 import de.mm20.launcher2.widgets.WeatherWidget
 import de.mm20.launcher2.widgets.Widget
 import de.mm20.launcher2.widgets.WidgetRepository
@@ -72,8 +72,8 @@ class WidgetsService(
                 label = context.getString(R.string.widget_name_notes),
             ),
             BuiltInWidgetInfo(
-                type = HabitsWidget.Type,
-                label = context.getString(R.string.widget_name_habits),
+                type = TickTickTasksWidget.Type,
+                label = context.getString(R.string.widget_name_ticktick_tasks),
             ),
         )
     }
