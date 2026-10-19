@@ -2,11 +2,6 @@ package de.mm20.launcher2.files
 
 import android.content.Context
 import de.mm20.launcher2.files.providers.LocalFileProvider
-import de.mm20.launcher2.files.providers.NextcloudFileProvider
-import de.mm20.launcher2.files.providers.OwncloudFileProvider
-import de.mm20.launcher2.files.providers.PluginFileProvider
-import de.mm20.launcher2.nextcloud.NextcloudApiHelper
-import de.mm20.launcher2.owncloud.OwncloudClient
 import de.mm20.launcher2.permissions.PermissionGroup
 import de.mm20.launcher2.permissions.PermissionsManager
 import de.mm20.launcher2.preferences.search.FileSearchSettings
@@ -33,13 +28,6 @@ internal class FileRepository(
     private val settings: FileSearchSettings,
 ) : SearchableRepository<File> {
 
-    private val nextcloudClient by lazy {
-        NextcloudApiHelper(context)
-    }
-    private val owncloudClient by lazy {
-        OwncloudClient(context)
-    }
-
     override fun search(
         query: String,
         allowNetwork: Boolean,
@@ -63,9 +51,7 @@ internal class FileRepository(
                         permissionsManager
                     ) else null
 
-                    "nextcloud" -> NextcloudFileProvider(nextcloudClient)
-                    "owncloud" -> OwncloudFileProvider(owncloudClient)
-                    else -> PluginFileProvider(context, it)
+                    else -> null
                 }
             }
 

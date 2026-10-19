@@ -31,5 +31,4 @@ class LocaleSettingsScreenVM : ViewModel(), KoinComponent {
         it.toImmutableList()
     }
 
-    val currencies = localeSettings.currencies
 }

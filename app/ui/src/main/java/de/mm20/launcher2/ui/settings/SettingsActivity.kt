@@ -56,8 +56,6 @@ import de.mm20.launcher2.ui.settings.appshortcuts.AppShortcutsSettingsRoute
 import de.mm20.launcher2.ui.settings.appshortcuts.AppShortcutsSettingsScreen
 import de.mm20.launcher2.ui.settings.backup.BackupSettingsRoute
 import de.mm20.launcher2.ui.settings.backup.BackupSettingsScreen
-import de.mm20.launcher2.ui.settings.breezyweather.BreezyWeatherSettingsRoute
-import de.mm20.launcher2.ui.settings.breezyweather.BreezyWeatherSettingsScreen
 import de.mm20.launcher2.ui.settings.buildinfo.BuildInfoSettingsRoute
 import de.mm20.launcher2.ui.settings.buildinfo.BuildInfoSettingsScreen
 import de.mm20.launcher2.ui.settings.calendarsearch.CalendarProviderSettingsRoute
@@ -70,10 +68,6 @@ import de.mm20.launcher2.ui.settings.colorscheme.ColorSchemesSettingsRoute
 import de.mm20.launcher2.ui.settings.colorscheme.ColorSchemesSettingsScreen
 import de.mm20.launcher2.ui.settings.contacts.ContactsSettingsRoute
 import de.mm20.launcher2.ui.settings.contacts.ContactsSettingsScreen
-import de.mm20.launcher2.ui.settings.crashreporter.CrashReportRoute
-import de.mm20.launcher2.ui.settings.crashreporter.CrashReportScreen
-import de.mm20.launcher2.ui.settings.crashreporter.CrashReporterRoute
-import de.mm20.launcher2.ui.settings.crashreporter.CrashReporterScreen
 import de.mm20.launcher2.ui.settings.debug.DebugSettingsRoute
 import de.mm20.launcher2.ui.settings.debug.DebugSettingsScreen
 import de.mm20.launcher2.ui.settings.debug.StringNormalizerTestRoute
@@ -82,8 +76,6 @@ import de.mm20.launcher2.ui.settings.easteregg.EasterEggSettingsRoute
 import de.mm20.launcher2.ui.settings.easteregg.EasterEggSettingsScreen
 import de.mm20.launcher2.ui.settings.favorites.FavoritesSettingsRoute
 import de.mm20.launcher2.ui.settings.favorites.FavoritesSettingsScreen
-import de.mm20.launcher2.ui.settings.feed.FeedIntegrationSettingsRoute
-import de.mm20.launcher2.ui.settings.feed.FeedIntegrationSettingsScreen
 import de.mm20.launcher2.ui.settings.filesearch.FileSearchSettingsRoute
 import de.mm20.launcher2.ui.settings.filesearch.FileSearchSettingsScreen
 import de.mm20.launcher2.ui.settings.filterbar.FilterBarSettingsRoute
@@ -102,30 +94,16 @@ import de.mm20.launcher2.ui.settings.license.LicenseRoute
 import de.mm20.launcher2.ui.settings.license.LicenseScreen
 import de.mm20.launcher2.ui.settings.locale.CalendarSettingsRoute
 import de.mm20.launcher2.ui.settings.locale.CalendarSettingsScreen
-import de.mm20.launcher2.ui.settings.locale.CurrencySettingsRoute
-import de.mm20.launcher2.ui.settings.locale.CurrencySettingsScreen
 import de.mm20.launcher2.ui.settings.locale.LocaleSettingsRoute
 import de.mm20.launcher2.ui.settings.locale.LocaleSettingsScreen
 import de.mm20.launcher2.ui.settings.locale.MeasurementSystemSettingsRoute
 import de.mm20.launcher2.ui.settings.locale.MeasurementSystemSettingsScreen
-import de.mm20.launcher2.ui.settings.locations.LocationsSettingsRoute
-import de.mm20.launcher2.ui.settings.locations.LocationsSettingsScreen
 import de.mm20.launcher2.ui.settings.log.LogRoute
 import de.mm20.launcher2.ui.settings.log.LogScreen
 import de.mm20.launcher2.ui.settings.main.MainRoute
 import de.mm20.launcher2.ui.settings.main.MainSettingsScreen
 import de.mm20.launcher2.ui.settings.media.MediaIntegrationSettingsRoute
 import de.mm20.launcher2.ui.settings.media.MediaIntegrationSettingsScreen
-import de.mm20.launcher2.ui.settings.nextcloud.NextcloudSettingsRoute
-import de.mm20.launcher2.ui.settings.nextcloud.NextcloudSettingsScreen
-import de.mm20.launcher2.ui.settings.osm.OsmSettingsRoute
-import de.mm20.launcher2.ui.settings.osm.OsmSettingsScreen
-import de.mm20.launcher2.ui.settings.owncloud.OwncloudSettingsRoute
-import de.mm20.launcher2.ui.settings.owncloud.OwncloudSettingsScreen
-import de.mm20.launcher2.ui.settings.plugins.PluginSettingsRoute
-import de.mm20.launcher2.ui.settings.plugins.PluginSettingsScreen
-import de.mm20.launcher2.ui.settings.plugins.PluginsSettingsRoute
-import de.mm20.launcher2.ui.settings.plugins.PluginsSettingsScreen
 import de.mm20.launcher2.ui.settings.search.SearchSettingsRoute
 import de.mm20.launcher2.ui.settings.search.SearchSettingsScreen
 import de.mm20.launcher2.ui.settings.searchactions.SearchActionsSettingsRoute
@@ -154,10 +132,6 @@ import de.mm20.launcher2.ui.settings.unitconverter.UnitConverterHelpSettingsRout
 import de.mm20.launcher2.ui.settings.unitconverter.UnitConverterHelpSettingsScreen
 import de.mm20.launcher2.ui.settings.unitconverter.UnitConverterSettingsRoute
 import de.mm20.launcher2.ui.settings.unitconverter.UnitConverterSettingsScreen
-import de.mm20.launcher2.ui.settings.weather.WeatherIntegrationSettingsRoute
-import de.mm20.launcher2.ui.settings.weather.WeatherIntegrationSettingsScreen
-import de.mm20.launcher2.ui.settings.wikipedia.WikipediaSettingsRoute
-import de.mm20.launcher2.ui.settings.wikipedia.WikipediaSettingsScreen
 import de.mm20.launcher2.ui.theme.LauncherTheme
 import de.mm20.launcher2.ui.theme.wallpaperColorsAsState
 
@@ -228,15 +202,6 @@ class SettingsActivity : BaseActivity() {
             entry<UnitConverterHelpSettingsRoute> {
                 UnitConverterHelpSettingsScreen()
             }
-            entry<WikipediaSettingsRoute> {
-                WikipediaSettingsScreen()
-            }
-            entry<LocationsSettingsRoute> {
-                LocationsSettingsScreen()
-            }
-            entry<OsmSettingsRoute> {
-                OsmSettingsScreen()
-            }
             entry<FileSearchSettingsRoute> {
                 FileSearchSettingsScreen()
             }
@@ -258,9 +223,6 @@ class SettingsActivity : BaseActivity() {
             entry<FilterBarSettingsRoute> {
                 FilterBarSettingsScreen()
             }
-            entry<WeatherIntegrationSettingsRoute> {
-                WeatherIntegrationSettingsScreen()
-            }
             entry<MediaIntegrationSettingsRoute> {
                 MediaIntegrationSettingsScreen()
             }
@@ -276,26 +238,11 @@ class SettingsActivity : BaseActivity() {
             entry<IntegrationsSettingsRoute> {
                 IntegrationsSettingsScreen()
             }
-            entry<NextcloudSettingsRoute> {
-                NextcloudSettingsScreen()
-            }
-            entry<OwncloudSettingsRoute> {
-                OwncloudSettingsScreen()
-            }
             entry<TasksIntegrationSettingsRoute> {
                 TasksIntegrationSettingsScreen()
             }
             entry<TickTickSettingsRoute> {
                 TickTickSettingsScreen()
-            }
-            entry<BreezyWeatherSettingsRoute> {
-                BreezyWeatherSettingsScreen()
-            }
-            entry<PluginsSettingsRoute> {
-                PluginsSettingsScreen()
-            }
-            entry<PluginSettingsRoute> {
-                PluginSettingsScreen(it.pluginId)
             }
             entry<AboutSettingsRoute> {
                 AboutSettingsScreen()
@@ -318,23 +265,14 @@ class SettingsActivity : BaseActivity() {
             entry<CalendarSettingsRoute> {
                 CalendarSettingsScreen()
             }
-            entry<CurrencySettingsRoute> {
-                CurrencySettingsScreen()
-            }
             entry<MeasurementSystemSettingsRoute> {
                 MeasurementSystemSettingsScreen()
             }
             entry<BackupSettingsRoute> {
                 BackupSettingsScreen()
             }
-            entry<CrashReporterRoute> {
-                CrashReporterScreen()
-            }
             entry<LogRoute> {
                 LogScreen()
-            }
-            entry<CrashReportRoute> {
-                CrashReportScreen(it.fileName)
             }
             entry<LicenseRoute> {
                 LicenseScreen(it.libraryName)
@@ -344,9 +282,6 @@ class SettingsActivity : BaseActivity() {
             }
             entry<SmartspacerSettingsRoute> {
                 SmartspacerSettingsScreen()
-            }
-            entry<FeedIntegrationSettingsRoute> {
-                FeedIntegrationSettingsScreen()
             }
         }
 
@@ -428,24 +363,17 @@ class SettingsActivity : BaseActivity() {
             intent.getStringExtra(EXTRA_ROUTE) ?: return null
         }
         return when(routeName) {
-            ROUTE_WEATHER_INTEGRATION -> WeatherIntegrationSettingsRoute
             ROUTE_MEDIA_INTEGRATION -> MediaIntegrationSettingsRoute
             ROUTE_SEARCH_ACTIONS -> SearchActionsSettingsRoute
             ROUTE_HIDDEN_ITEMS -> HiddenItemsSettingsRoute
-            ROUTE_CRASH_REPORT if (intent.hasExtra(EXTRA_CRASH_REPORT_PATH)) -> {
-                CrashReportRoute(intent.getStringExtra(EXTRA_CRASH_REPORT_PATH)!!)
-            }
             else -> null
         }
     }
 
     companion object {
         const val EXTRA_ROUTE = "de.mm20.launcher2.settings.ROUTE"
-        const val ROUTE_WEATHER_INTEGRATION = "settings/integrations/weather"
         const val ROUTE_MEDIA_INTEGRATION = "settings/integrations/media"
         const val ROUTE_SEARCH_ACTIONS = "settings/search/searchactions"
         const val ROUTE_HIDDEN_ITEMS = "settings/search/hiddenitems"
-        const val ROUTE_CRASH_REPORT = "settings/debug/crashreport"
-        const val EXTRA_CRASH_REPORT_PATH = "crash_report_path"
     }
 }

@@ -3,7 +3,6 @@ package de.mm20.launcher2.ui.settings.locale
 import android.content.Intent
 import android.icu.text.ListFormatter
 import android.icu.text.Transliterator
-import android.icu.util.Currency
 import android.icu.util.ULocale
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.Composable
@@ -44,7 +43,6 @@ fun LocaleSettingsScreen() {
     val measurementSystem by viewModel.measurementSystem.collectAsStateWithLifecycle(null)
     val transliterator by viewModel.transliterator.collectAsStateWithLifecycle(null)
     val calendars by viewModel.calendars.collectAsStateWithLifecycle(emptyList())
-    val currencies by viewModel.currencies.collectAsStateWithLifecycle(null)
 
     // The language that has been selected by the user, or null to use the system language
     val selectedLocale = remember {
@@ -236,28 +234,6 @@ fun LocaleSettingsScreen() {
                             listOfNotNull(primaryName, secondaryName)
                         )
                     }
-                )
-                Preference(
-                    title = stringResource(R.string.preference_currencies),
-                    summary = currencies?.let {
-                        if (it.isEmpty()) {
-                            return@let stringResource(R.string.preference_value_system_default)
-                        }
-
-                        val names = it.map {
-                            try {
-                                Currency.getInstance(it).displayName
-                            } catch (e: IllegalArgumentException) {
-                                it
-                            }
-                        }
-
-                        ListFormatter.getInstance().format(names)
-                    },
-                    icon = R.drawable.toll_24px,
-                    onClick = {
-                        backstack += CurrencySettingsRoute
-                    },
                 )
             }
         }

@@ -7,16 +7,12 @@ import androidx.lifecycle.viewModelScope
 import de.mm20.launcher2.applications.AppRepository
 import de.mm20.launcher2.permissions.PermissionGroup
 import de.mm20.launcher2.permissions.PermissionsManager
-import de.mm20.launcher2.plugins.PluginService
 import de.mm20.launcher2.preferences.search.CalculatorSearchSettings
 import de.mm20.launcher2.preferences.search.CalendarSearchSettings
 import de.mm20.launcher2.preferences.search.ContactSearchSettings
-import de.mm20.launcher2.preferences.search.LocationSearchSettings
 import de.mm20.launcher2.preferences.search.SearchFilterSettings
 import de.mm20.launcher2.preferences.search.ShortcutSearchSettings
 import de.mm20.launcher2.preferences.search.UnitConverterSettings
-import de.mm20.launcher2.preferences.search.WebsiteSearchSettings
-import de.mm20.launcher2.preferences.search.WikipediaSearchSettings
 import de.mm20.launcher2.preferences.ui.SearchUiSettings
 import de.mm20.launcher2.search.SearchFilters
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,16 +26,12 @@ class SearchSettingsScreenVM : ViewModel(), KoinComponent {
     private val contactSearchSettings: ContactSearchSettings by inject()
     private val calendarSearchSettings: CalendarSearchSettings by inject()
     private val shortcutSearchSettings: ShortcutSearchSettings by inject()
-    private val wikipediaSearchSettings: WikipediaSearchSettings by inject()
-    private val websiteSearchSettings: WebsiteSearchSettings by inject()
     private val unitConverterSettings: UnitConverterSettings by inject()
     private val calculatorSearchSettings: CalculatorSearchSettings by inject()
-    private val locationSearchSettings: LocationSearchSettings by inject()
     private val searchFilterSettings: SearchFilterSettings by inject()
 
     private val appRepository: AppRepository by inject()
 
-    private val pluginService: PluginService by inject()
     private val permissionsManager: PermissionsManager by inject()
 
     val favorites = searchUiSettings.favorites
@@ -74,18 +66,6 @@ class SearchSettingsScreenVM : ViewModel(), KoinComponent {
         contactSearchSettings.setProviderEnabled("local", contacts)
     }
 
-    val hasLocationPermission = permissionsManager.hasPermission(PermissionGroup.Location)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
-    val placesSearch = locationSearchSettings.osmLocations
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
-    fun setPlacesSearch(enabled: Boolean) {
-        locationSearchSettings.setOsmLocations(enabled)
-    }
-
-    fun requestLocationPermission(activity: AppCompatActivity) {
-        permissionsManager.requestPermission(activity, PermissionGroup.Location)
-    }
-
     fun requestCalendarPermission(activity: AppCompatActivity) {
         permissionsManager.requestPermission(activity, PermissionGroup.Calendar)
     }
@@ -106,20 +86,6 @@ class SearchSettingsScreenVM : ViewModel(), KoinComponent {
 
     fun setUnitConverter(unitConverter: Boolean) {
         unitConverterSettings.setEnabled(unitConverter)
-    }
-
-    val wikipedia = wikipediaSearchSettings.enabled
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
-
-    fun setWikipedia(wikipedia: Boolean) {
-        wikipediaSearchSettings.setEnabled(wikipedia)
-    }
-
-    val websites = websiteSearchSettings.enabled
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
-
-    fun setWebsites(websites: Boolean) {
-        websiteSearchSettings.setEnabled(websites)
     }
 
     val autoFocus = searchUiSettings.openKeyboard
@@ -168,9 +134,6 @@ class SearchSettingsScreenVM : ViewModel(), KoinComponent {
     fun setSearchFilters(searchFilters: SearchFilters) {
         searchFilterSettings.setDefaultFilter(searchFilters)
     }
-
-    val plugins = pluginService.getPluginsWithState(enabled = true)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
     val isTasksAppInstalled = appRepository.findOne("org.tasks", Process.myUserHandle())
         .map { it != null }

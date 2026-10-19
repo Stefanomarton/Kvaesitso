@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
-import de.mm20.launcher2.FeatureFlags
 import de.mm20.launcher2.icons.LauncherIcon
 import de.mm20.launcher2.ktx.isAtLeastApiLevel
 import de.mm20.launcher2.preferences.GestureAction
@@ -68,11 +67,6 @@ fun GestureSettingsScreen() {
 
     val shortcutOptions by viewModel.shortcutOptions.collectAsStateWithLifecycle(emptyList())
     val widgetOptions by viewModel.widgetOptions.collectAsStateWithLifecycle(emptyList())
-
-    val optionsWithFeed =
-        if (FeatureFlags.feed) {
-            options + GestureAction.Feed::class
-        } else options
 
 
     val context = LocalContext.current
@@ -124,7 +118,7 @@ fun GestureSettingsScreen() {
                         icon = R.drawable.swipe_right_alt_24px,
                         value = swipeRight,
                         onValueChanged = viewModel::setSwipeRight,
-                        options = optionsWithFeed,
+                        options = options,
                         shortcutOptions = shortcutOptions,
                         widgetOptions = widgetOptions,
                     )

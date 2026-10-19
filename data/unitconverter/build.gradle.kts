@@ -50,7 +50,6 @@ dependencies {
     implementation(libs.koin.android)
 
     implementation(project(":core:preferences"))
-    implementation(project(":data:currencies"))
     implementation(project(":core:base"))
     implementation(project(":core:i18n"))
 

@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
-import de.mm20.launcher2.plugin.PluginType
 import de.mm20.launcher2.ui.R
 import de.mm20.launcher2.ui.component.DismissableBottomSheet
 import de.mm20.launcher2.ui.component.SmallMessage
@@ -42,11 +41,9 @@ import de.mm20.launcher2.ui.settings.favorites.FavoritesSettingsRoute
 import de.mm20.launcher2.ui.settings.filesearch.FileSearchSettingsRoute
 import de.mm20.launcher2.ui.settings.filterbar.FilterBarSettingsRoute
 import de.mm20.launcher2.ui.settings.hiddenitems.HiddenItemsSettingsRoute
-import de.mm20.launcher2.ui.settings.locations.LocationsSettingsRoute
 import de.mm20.launcher2.ui.settings.searchactions.SearchActionsSettingsRoute
 import de.mm20.launcher2.ui.settings.tags.TagsSettingsRoute
 import de.mm20.launcher2.ui.settings.unitconverter.UnitConverterSettingsRoute
-import de.mm20.launcher2.ui.settings.wikipedia.WikipediaSettingsRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -62,10 +59,6 @@ fun SearchSettingsScreen() {
 
     var showFilterEditor by remember { mutableStateOf(false) }
 
-    val plugins by viewModel.plugins.collectAsStateWithLifecycle(null)
-    val hasCalendarPlugins by remember { derivedStateOf { plugins?.any { it.plugin.type == PluginType.Calendar } } }
-    val hasLocationPlugins by remember { derivedStateOf { plugins?.any { it.plugin.type == PluginType.LocationSearch } } }
-    val hasContactPlugins by remember { derivedStateOf { plugins?.any { it.plugin.type == PluginType.ContactSearch } } }
     val isTasksAppInstalled by viewModel.isTasksAppInstalled.collectAsStateWithLifecycle()
 
     val hasAppShortcutsPermission by viewModel.hasAppShortcutPermission.collectAsStateWithLifecycle(
@@ -73,18 +66,14 @@ fun SearchSettingsScreen() {
     )
     val hasContactsPermission by viewModel.hasContactsPermission.collectAsStateWithLifecycle(null)
     val hasCalendarPermission by viewModel.hasCalendarPermission.collectAsStateWithLifecycle(null)
-    val hasLocationPermission by viewModel.hasLocationPermission.collectAsStateWithLifecycle(null)
 
     val favorites by viewModel.favorites.collectAsStateWithLifecycle(null)
     val allApps by viewModel.allApps.collectAsStateWithLifecycle(null)
     val appShortcuts by viewModel.appShortcuts.collectAsStateWithLifecycle(null)
     val calendar by viewModel.calendarSearch.collectAsStateWithLifecycle(null)
-    val places by viewModel.placesSearch.collectAsStateWithLifecycle(null)
     val contacts by viewModel.contacts.collectAsStateWithLifecycle(null)
     val calculator by viewModel.calculator.collectAsStateWithLifecycle(null)
     val unitConverter by viewModel.unitConverter.collectAsStateWithLifecycle(null)
-    val wikipedia by viewModel.wikipedia.collectAsStateWithLifecycle(null)
-    val websites by viewModel.websites.collectAsStateWithLifecycle(null)
 
 
     val autoFocus by viewModel.autoFocus.collectAsStateWithLifecycle(null)
@@ -133,16 +122,6 @@ fun SearchSettingsScreen() {
                     }
                 )
 
-                if (hasContactPlugins != false) {
-                    Preference(
-                        title = stringResource(R.string.preference_search_contacts),
-                        summary = stringResource(R.string.preference_search_contacts_summary),
-                        icon = R.drawable.person_24px,
-                        onClick = {
-                            backStack.add(ContactsSettingsRoute)
-                        },
-                    )
-                } else {
                     GuardedPreference(
                         locked = hasContactsPermission == false,
                         onUnlock = {
@@ -164,9 +143,8 @@ fun SearchSettingsScreen() {
                             enabled = hasContactsPermission == true
                         )
                     }
-                }
 
-                if (hasCalendarPlugins != false || isTasksAppInstalled != false) {
+                if (isTasksAppInstalled != false) {
                     Preference(
                         title = stringResource(R.string.preference_search_calendar),
                         summary = stringResource(R.string.preference_search_calendar_summary),
@@ -247,61 +225,7 @@ fun SearchSettingsScreen() {
                     }
                 )
 
-                PreferenceWithSwitch(
-                    title = stringResource(R.string.preference_search_wikipedia),
-                    summary = stringResource(R.string.preference_search_wikipedia_summary),
-                    icon = R.drawable.wikipedia,
-                    switchValue = wikipedia == true,
-                    onSwitchChanged = {
-                        viewModel.setWikipedia(it)
-                    },
-                    onClick = {
-                        backStack.add(WikipediaSettingsRoute)
-                    }
-                )
 
-                SwitchPreference(
-                    title = stringResource(R.string.preference_search_websites),
-                    summary = stringResource(R.string.preference_search_websites_summary),
-                    icon = R.drawable.public_24px,
-                    value = websites == true,
-                    onValueChanged = {
-                        viewModel.setWebsites(it)
-                    }
-                )
-                GuardedPreference(
-                    locked = hasLocationPermission == false,
-                    onUnlock = {
-                        viewModel.requestLocationPermission(context as AppCompatActivity)
-                    },
-                    description = stringResource(R.string.missing_permission_location_search),
-                ) {
-                    if (hasLocationPlugins != false) {
-                        Preference(
-                            title = stringResource(R.string.preference_search_locations),
-                            summary = stringResource(R.string.preference_search_locations_summary),
-                            icon = R.drawable.location_on_24px,
-                            enabled = hasLocationPermission == true,
-                            onClick = {
-                                backStack.add(LocationsSettingsRoute)
-                            }
-                        )
-                    } else {
-                        PreferenceWithSwitch(
-                            title = stringResource(R.string.preference_search_locations),
-                            summary = stringResource(R.string.preference_search_locations_summary),
-                            icon = R.drawable.location_on_24px,
-                            onClick = {
-                                backStack.add(LocationsSettingsRoute)
-                            },
-                            switchValue = places == true,
-                            onSwitchChanged = {
-                                viewModel.setPlacesSearch(it)
-                            },
-                            enabled = hasLocationPermission == true,
-                        )
-                    }
-                }
 
                 Preference(
                     title = stringResource(R.string.preference_screen_search_actions),

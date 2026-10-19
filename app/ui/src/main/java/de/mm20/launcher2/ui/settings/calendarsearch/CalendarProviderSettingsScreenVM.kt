@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import de.mm20.launcher2.calendar.CalendarRepository
 import de.mm20.launcher2.permissions.PermissionGroup
 import de.mm20.launcher2.permissions.PermissionsManager
-import de.mm20.launcher2.plugins.PluginService
 import de.mm20.launcher2.preferences.search.CalendarSearchSettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -21,9 +20,6 @@ class CalendarProviderSettingsScreenVM: ViewModel(), KoinComponent {
 
     private val calendarSearchSettings: CalendarSearchSettings by inject()
     private val calendarRepository: CalendarRepository by inject()
-    private val pluginService: PluginService by inject()
-
-    val pluginState = providerId.flatMapLatest { pluginService.getPluginWithState(it) }
 
     val isProviderEnabled = providerId.flatMapLatest { calendarSearchSettings.isProviderEnabled(it) }
     fun setProviderEnabled(providerId: String, enabled: Boolean) {

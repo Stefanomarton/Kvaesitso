@@ -1,12 +1,10 @@
 package de.mm20.launcher2.unitconverter
 
 import android.content.Context
-import de.mm20.launcher2.currencies.CurrencyRepository
 import de.mm20.launcher2.preferences.search.UnitConverterSettings
 import de.mm20.launcher2.search.data.UnitConverter
 import de.mm20.launcher2.unitconverter.converters.AreaConverter
 import de.mm20.launcher2.unitconverter.converters.Converter
-import de.mm20.launcher2.unitconverter.converters.CurrencyConverter
 import de.mm20.launcher2.unitconverter.converters.DataConverter
 import de.mm20.launcher2.unitconverter.converters.LengthConverter
 import de.mm20.launcher2.unitconverter.converters.MassConverter
@@ -14,51 +12,32 @@ import de.mm20.launcher2.unitconverter.converters.TemperatureConverter
 import de.mm20.launcher2.unitconverter.converters.TimeConverter
 import de.mm20.launcher2.unitconverter.converters.VelocityConverter
 import de.mm20.launcher2.unitconverter.converters.VolumeConverter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 interface UnitConverterRepository {
     fun search(query: String): Flow<UnitConverter?>
-    suspend fun getAvailableConverters(includeCurrencies: Boolean): List<Converter>
+    suspend fun getAvailableConverters(): List<Converter>
 }
 
 internal class UnitConverterRepositoryImpl(
     private val context: Context,
-    private val currencyRepository: CurrencyRepository,
     private val settings: UnitConverterSettings,
 ) : UnitConverterRepository, KoinComponent {
-
-    private val scope = CoroutineScope(Job() + Dispatchers.Default)
-
-    init {
-        scope.launch {
-            settings.map { it.enabled && it.currencies }
-                .distinctUntilChanged().collectLatest {
-                    if (it) currencyRepository.enableCurrencyUpdateWorker()
-                    else currencyRepository.disableCurrencyUpdateWorker()
-                }
-        }
-    }
 
     override fun search(query: String): Flow<UnitConverter?> {
         if (query.isBlank()) return flowOf(null)
         return settings.distinctUntilChanged().map {
             if (!it.enabled) null
-            else queryUnitConverter(query, it.currencies)
+            else queryUnitConverter(query)
         }
     }
 
-    override suspend fun getAvailableConverters(includeCurrencies: Boolean): List<Converter> {
-        val converters = mutableListOf(
+    override suspend fun getAvailableConverters(): List<Converter> {
+        return listOf(
             MassConverter(context),
             LengthConverter(context),
             DataConverter(context),
@@ -68,14 +47,10 @@ internal class UnitConverterRepositoryImpl(
             TemperatureConverter(context),
             VolumeConverter(context),
         )
-        if (includeCurrencies) converters.add(CurrencyConverter(currencyRepository, settings.preferredCurrencies.first()))
-
-        return converters
     }
 
     private suspend fun queryUnitConverter(
         query: String,
-        includeCurrencies: Boolean
     ): UnitConverter? {
         val regex = Regex("""([+\-]?[\d+\-e,.]+|[^\d>\-]+)""")
 
@@ -116,7 +91,7 @@ internal class UnitConverterRepositoryImpl(
             return null
         }
 
-        val converters = getAvailableConverters(includeCurrencies)
+        val converters = getAvailableConverters()
 
         for (converter in converters) {
             if (!converter.isValidUnit(inputUnit)) continue

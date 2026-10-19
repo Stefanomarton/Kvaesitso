@@ -9,16 +9,13 @@ import androidx.core.app.ActivityOptionsCompat
 import de.mm20.launcher2.applications.AppRepository
 import de.mm20.launcher2.appshortcuts.AppShortcutRepository
 import de.mm20.launcher2.badges.BadgeService
-import de.mm20.launcher2.devicepose.DevicePoseProvider
 import de.mm20.launcher2.icons.IconService
 import de.mm20.launcher2.icons.LauncherIcon
 import de.mm20.launcher2.notifications.Notification
 import de.mm20.launcher2.notifications.NotificationRepository
 import de.mm20.launcher2.permissions.PermissionGroup
 import de.mm20.launcher2.permissions.PermissionsManager
-import de.mm20.launcher2.preferences.MeasurementSystem
 import de.mm20.launcher2.preferences.search.ContactSearchSettings
-import de.mm20.launcher2.preferences.search.LocationSearchSettings
 import de.mm20.launcher2.search.AppShortcut
 import de.mm20.launcher2.search.Application
 import de.mm20.launcher2.search.File
@@ -54,12 +51,10 @@ class SearchableItemVM : ListItemViewModel(), KoinComponent {
     private val appRepository: AppRepository by inject()
     private val appShortcutRepository: AppShortcutRepository by inject()
     private val permissionsManager: PermissionsManager by inject()
-    private val locationSearchSettings: LocationSearchSettings by inject()
     private val contactSearchSettings: ContactSearchSettings by inject()
 
     val isUpToDate = MutableStateFlow(true)
 
-    val devicePoseProvider: DevicePoseProvider by inject()
 
     val searchable = MutableStateFlow<SavableSearchable?>(null)
     private val iconSize = MutableStateFlow(0)
@@ -236,19 +231,6 @@ class SearchableItemVM : ListItemViewModel(), KoinComponent {
     fun requestShortcutPermission(activity: AppCompatActivity) {
         permissionsManager.requestPermission(activity, PermissionGroup.AppShortcuts)
     }
-
-    val measurementSystem = locationSearchSettings.measurementSystem
-        .stateIn(viewModelScope, SharingStarted.Lazily, MeasurementSystem.Metric)
-
-    val showMap = locationSearchSettings.showMap
-        .stateIn(viewModelScope, SharingStarted.Lazily, false)
-
-    val applyMapTheming = locationSearchSettings.themeMap
-        .stateIn(viewModelScope, SharingStarted.Lazily, false)
-
-    val mapTileServerUrl = locationSearchSettings.tileServer
-        .map { it ?: LocationSearchSettings.DefaultTileServerUrl }
-        .stateIn(viewModelScope, SharingStarted.Lazily, "")
 
     val callOnTap = contactSearchSettings.callOnTap
         .stateIn(viewModelScope, SharingStarted.Lazily, false)

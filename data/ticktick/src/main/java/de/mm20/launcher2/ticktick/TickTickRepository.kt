@@ -6,6 +6,8 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.Constraints
+import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.core.net.toUri
@@ -61,6 +63,11 @@ class TickTickRepository internal constructor(
     val isConfigured: Flow<Boolean> = settings.account.map { it != null }
     val isConfiguredNow: Boolean
         get() = settings.account.value != null
+
+    init {
+        // Re-applies the current work request (network constraint) to the job already scheduled on the device.
+        schedulePeriodicSync()
+    }
 
     var defaultProjectId: String?
         get() = settings.defaultProjectId
@@ -226,8 +233,10 @@ class TickTickRepository internal constructor(
         if (!isConfiguredNow) return
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
             WorkName,
-            ExistingPeriodicWorkPolicy.KEEP,
-            PeriodicWorkRequestBuilder<TickTickSyncWorker>(15, TimeUnit.MINUTES).build(),
+            ExistingPeriodicWorkPolicy.UPDATE,
+            PeriodicWorkRequestBuilder<TickTickSyncWorker>(15, TimeUnit.MINUTES)
+                .setConstraints(Constraints(requiredNetworkType = NetworkType.CONNECTED))
+                .build(),
         )
     }
 

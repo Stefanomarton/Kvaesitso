@@ -4,14 +4,11 @@ import android.content.Context
 import de.mm20.launcher2.calendar.providers.AndroidCalendarProvider
 import de.mm20.launcher2.calendar.providers.CalendarList
 import de.mm20.launcher2.calendar.providers.CalendarProvider
-import de.mm20.launcher2.calendar.providers.PluginCalendarProvider
 import de.mm20.launcher2.calendar.providers.TasksCalendarProvider
 import de.mm20.launcher2.calendar.providers.TickTickCalendarProvider
 import de.mm20.launcher2.ticktick.TickTickRepository
 import de.mm20.launcher2.permissions.PermissionGroup
 import de.mm20.launcher2.permissions.PermissionsManager
-import de.mm20.launcher2.plugin.PluginRepository
-import de.mm20.launcher2.plugin.PluginType
 import de.mm20.launcher2.preferences.search.CalendarSearchSettings
 import de.mm20.launcher2.search.CalendarEvent
 import de.mm20.launcher2.search.SearchableRepository
@@ -25,6 +22,7 @@ import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.update
@@ -46,7 +44,6 @@ interface CalendarRepository : SearchableRepository<CalendarEvent> {
 internal class CalendarRepositoryImpl(
     private val context: Context,
     private val permissionsManager: PermissionsManager,
-    private val pluginRepository: PluginRepository,
     private val settings: CalendarSearchSettings,
     private val tickTick: TickTickRepository,
 ) : CalendarRepository {
@@ -79,7 +76,7 @@ internal class CalendarRepositoryImpl(
                     "local" -> if (calPerm) AndroidCalendarProvider(context) else null
                     "tasks.org" -> if (taskPerm) TasksCalendarProvider(context) else null
                     "ticktick" -> tickTickProvider
-                    else -> PluginCalendarProvider(context, it)
+                    else -> null
                 }
             }
 
@@ -106,25 +103,15 @@ internal class CalendarRepositoryImpl(
     ): Flow<ImmutableList<CalendarEvent>> {
         val hasCalendarPermission = permissionsManager.hasPermission(PermissionGroup.Calendar)
         val hasTasksPermission = permissionsManager.hasPermission(PermissionGroup.Tasks)
-        val plugins = pluginRepository.findMany(
-            type = PluginType.Calendar,
-            enabled = true,
-        )
         return combineTransform(
             hasCalendarPermission,
             hasTasksPermission,
-            plugins,
             tickTickProvider,
-        ) { calPerm, taskPerm, plugins, tickTickProvider ->
+        ) { calPerm, taskPerm, tickTickProvider ->
             val providers = buildList {
                 if (calPerm) add(AndroidCalendarProvider(context)) else null
                 if (taskPerm) add(TasksCalendarProvider(context)) else null
                 add(tickTickProvider)
-                addAll(
-                    plugins.map {
-                        PluginCalendarProvider(context, it.authority)
-                    }
-                )
             }
 
             emitAll(
@@ -193,31 +180,18 @@ internal class CalendarRepositoryImpl(
 
                 "tasks.org" -> hasTaskPermission.map { if (it) listOf(TasksCalendarProvider(context)) else emptyList() }
                 "ticktick" -> tickTickProvider.map { listOf(it) }
-                else -> pluginRepository.get(providerId).map {
-                    if (it?.enabled == true) listOf(
-                        PluginCalendarProvider(
-                            context,
-                            providerId
-                        )
-                    ) else emptyList()
-                }
+                else -> flowOf(emptyList())
             }
         } else {
-            val plugins = pluginRepository.findMany(
-                type = PluginType.Calendar,
-                enabled = true,
-            )
             combine(
                 hasCalendarPermission,
                 hasTaskPermission,
-                plugins,
                 tickTickProvider,
-            ) { calPerm, tasksPerm, plugins, tickTickProvider ->
+            ) { calPerm, tasksPerm, tickTickProvider ->
                 buildList {
                     if (calPerm) add(AndroidCalendarProvider(context))
                     if (tasksPerm) add(TasksCalendarProvider(context))
                     add(tickTickProvider)
-                    addAll(plugins.map { PluginCalendarProvider(context, it.authority) })
                 }
             }
         }

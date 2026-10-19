@@ -37,7 +37,6 @@ import de.mm20.launcher2.ui.launcher.widgets.external.AppWidget
 import de.mm20.launcher2.ui.launcher.widgets.favorites.AppsWidget
 import de.mm20.launcher2.ui.launcher.widgets.music.MusicWidget
 import de.mm20.launcher2.ui.launcher.widgets.notes.NotesWidget
-import de.mm20.launcher2.ui.launcher.widgets.weather.WeatherWidget
 import de.mm20.launcher2.ui.theme.transparency.transparency
 import de.mm20.launcher2.widgets.AppWidget
 import de.mm20.launcher2.widgets.CalendarWidget
@@ -46,7 +45,6 @@ import de.mm20.launcher2.widgets.MusicWidget
 import de.mm20.launcher2.widgets.NotesWidget
 import de.mm20.launcher2.widgets.TickTickTasksWidget
 import de.mm20.launcher2.ui.launcher.widgets.ticktick.TickTickTasksWidget
-import de.mm20.launcher2.widgets.WeatherWidget
 import de.mm20.launcher2.widgets.Widget
 
 @Composable
@@ -126,9 +124,6 @@ fun WidgetItem(
             }
             AnimatedVisibility(!editMode) {
                 when (widget) {
-                    is WeatherWidget -> {
-                        WeatherWidget(widget)
-                    }
 
                     is MusicWidget -> {
                         MusicWidget(widget)

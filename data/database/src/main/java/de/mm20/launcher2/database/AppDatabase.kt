@@ -153,16 +153,13 @@ abstract class AppDatabase : RoomDatabase() {
 
                             connection.prepare(
                                 "INSERT INTO Widget (`type`, `position`, `id`, `parentId`) VALUES " +
-                                        "('weather', 0, ?, ?)," +
-                                        "('music', 1, ?, ?)," +
-                                        "('calendar', 2, ?, ?);"
+                                        "('music', 0, ?, ?)," +
+                                        "('calendar', 1, ?, ?);"
                             ).use {
                                 it.bindBlob(1, UUID.randomUUID().toBytes())
                                 it.bindBlob(2, defaultParentId.toBytes())
                                 it.bindBlob(3, UUID.randomUUID().toBytes())
                                 it.bindBlob(4, defaultParentId.toBytes())
-                                it.bindBlob(5, UUID.randomUUID().toBytes())
-                                it.bindBlob(6, defaultParentId.toBytes())
                                 it.step()
                             }
                         }

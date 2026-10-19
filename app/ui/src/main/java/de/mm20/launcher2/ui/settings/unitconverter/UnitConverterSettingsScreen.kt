@@ -12,7 +12,6 @@ import de.mm20.launcher2.ui.component.preferences.PreferenceCategory
 import de.mm20.launcher2.ui.component.preferences.PreferenceScreen
 import de.mm20.launcher2.ui.component.preferences.SwitchPreference
 import de.mm20.launcher2.ui.locals.LocalBackStack
-import de.mm20.launcher2.ui.settings.locale.CurrencySettingsRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -38,16 +37,6 @@ fun UnitConverterSettingsScreen() {
                         viewModel.setUnitConverter(it)
                     }
                 )
-                val currencyConverter by viewModel.currencyConverter.collectAsState()
-                SwitchPreference(
-                    title = stringResource(R.string.preference_search_currencyconverter),
-                    summary = stringResource(R.string.preference_search_currencyconverter_summary),
-                    enabled = unitConverter != false,
-                    value = currencyConverter == true,
-                    onValueChanged = {
-                        viewModel.setCurrencyConverter(it)
-                    }
-                )
             }
         }
         item {
@@ -57,13 +46,6 @@ fun UnitConverterSettingsScreen() {
                     icon = R.drawable.help_24px,
                     onClick = {
                         backStack.add(UnitConverterHelpSettingsRoute)
-                    }
-                )
-                Preference(
-                    title = stringResource(R.string.preference_currency_settings),
-                    icon = R.drawable.open_in_new_24px,
-                    onClick = {
-                        backStack.add(CurrencySettingsRoute)
                     }
                 )
             }

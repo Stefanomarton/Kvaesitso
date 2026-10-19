@@ -26,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import de.mm20.launcher2.search.data.CurrencyUnitConverter
 import de.mm20.launcher2.search.data.UnitConverter
 import de.mm20.launcher2.ui.R
 import java.util.Date
@@ -108,41 +107,6 @@ fun UnitConverterItem(
                     .weight(1f)
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
-                var showDisclaimer by remember { mutableStateOf(false) }
-                (unitConverter as? CurrencyUnitConverter)?.let {
-                    val df = DateFormat.getDateInstance(DateFormat.SHORT)
-                    Text(
-                        text = "${df.format(Date(it.updateTimestamp))} • ",
-                        style = MaterialTheme.typography.labelSmall,
-                    )
-                    Text(
-                        text = stringResource(id = R.string.disclaimer),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.clickable {
-                            showDisclaimer = true
-                        }
-                    )
-                    if (showDisclaimer) {
-                        AlertDialog(
-                            onDismissRequest = { showDisclaimer = false },
-                            confirmButton = {
-                                TextButton(onClick = { showDisclaimer = false }) {
-                                    Text(text = stringResource(id = R.string.close))
-                                }
-                            },
-                            title = { Text(stringResource(id = R.string.disclaimer)) },
-                            text = {
-                                Text(
-                                    stringResource(
-                                        id = R.string.disclaimer_currency_converter,
-                                        df.format(Date(it.updateTimestamp))
-                                    )
-                                )
-                            }
-                        )
-                    }
-                }
             }
             if (!showAll && unitConverter.values.size > 5) {
                 TextButton(

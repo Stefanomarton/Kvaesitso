@@ -25,13 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.roundToIntRect
 import de.mm20.launcher2.search.AppShortcut
 import de.mm20.launcher2.search.Application
-import de.mm20.launcher2.search.Article
 import de.mm20.launcher2.search.CalendarEvent
 import de.mm20.launcher2.search.Contact
 import de.mm20.launcher2.search.File
-import de.mm20.launcher2.search.Location
 import de.mm20.launcher2.search.SavableSearchable
-import de.mm20.launcher2.search.Website
 import de.mm20.launcher2.ui.ktx.toPixels
 import de.mm20.launcher2.ui.launcher.search.apps.AppItem
 import de.mm20.launcher2.ui.launcher.search.calendar.CalendarItem
@@ -39,10 +36,7 @@ import de.mm20.launcher2.ui.launcher.search.common.SearchableItemVM
 import de.mm20.launcher2.ui.launcher.search.contacts.ContactItem
 import de.mm20.launcher2.ui.launcher.search.files.FileItem
 import de.mm20.launcher2.ui.launcher.search.listItemViewModel
-import de.mm20.launcher2.ui.launcher.search.location.LocationItem
 import de.mm20.launcher2.ui.launcher.search.shortcut.AppShortcutItem
-import de.mm20.launcher2.ui.launcher.search.website.WebsiteItem
-import de.mm20.launcher2.ui.launcher.search.wikipedia.ArticleItem
 import de.mm20.launcher2.ui.locals.LocalGridSettings
 
 @Composable
@@ -156,19 +150,6 @@ fun ListItem(
                     )
                 }
 
-                is Location -> {
-                    LocationItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .combinedClickable(
-                                enabled = !showDetails,
-                                onClick = { onShowDetails(true) },
-                                onLongClick = { onShowDetails(true) }),
-                        location = item,
-                        showDetails = showDetails,
-                        onBack = { onShowDetails(false) }
-                    )
-                }
 
                 is AppShortcut -> {
                     AppShortcutItem(
@@ -189,41 +170,7 @@ fun ListItem(
                     )
                 }
 
-                is Article -> {
-                    ArticleItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .combinedClickable(
-                                enabled = !showDetails,
-                                onClick = {
-                                    if (!viewModel.launch(context, bounds)) {
-                                        onShowDetails(true)
-                                    }
-                                },
-                                onLongClick = { onShowDetails(true) }),
-                        showDetails = showDetails,
-                        onBack = { onShowDetails(false) },
-                        article = item,
-                    )
-                }
 
-                is Website -> {
-                    WebsiteItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .combinedClickable(
-                                enabled = !showDetails,
-                                onClick = {
-                                    if (!viewModel.launch(context, bounds)) {
-                                        onShowDetails(true)
-                                    }
-                                },
-                                onLongClick = { onShowDetails(true) }),
-                        website = item,
-                        onBack = { onShowDetails(false) },
-                        showDetails = showDetails,
-                    )
-                }
             }
 
         }

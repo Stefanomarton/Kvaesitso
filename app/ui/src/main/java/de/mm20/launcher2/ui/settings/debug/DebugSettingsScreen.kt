@@ -24,7 +24,6 @@ import de.mm20.launcher2.ui.component.preferences.Preference
 import de.mm20.launcher2.ui.component.preferences.PreferenceCategory
 import de.mm20.launcher2.ui.component.preferences.PreferenceScreen
 import de.mm20.launcher2.ui.locals.LocalBackStack
-import de.mm20.launcher2.ui.settings.crashreporter.CrashReporterRoute
 import de.mm20.launcher2.ui.settings.log.LogRoute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -57,12 +56,6 @@ fun DebugSettingsScreen() {
         }
         item {
             PreferenceCategory {
-                Preference(
-                    title = stringResource(R.string.preference_crash_reporter),
-                    summary = stringResource(R.string.preference_crash_reporter_summary),
-                    onClick = {
-                        backStack.add(CrashReporterRoute)
-                    })
 
                 Preference(
                     title = stringResource(R.string.preference_logs),

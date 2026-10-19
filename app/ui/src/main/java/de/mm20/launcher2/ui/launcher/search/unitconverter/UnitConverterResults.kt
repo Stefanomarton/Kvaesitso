@@ -30,7 +30,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import de.mm20.launcher2.search.data.CurrencyUnitConverter
 import de.mm20.launcher2.search.data.UnitConverter
 import de.mm20.launcher2.ui.R
 import de.mm20.launcher2.ui.launcher.search.common.ShowAllButton
@@ -68,47 +67,6 @@ fun LazyListScope.UnitConverterResults(
                             overflow = TextOverflow.Ellipsis,
                             softWrap = false
                         )
-                        if (converter is CurrencyUnitConverter) {
-                            var showDisclaimer by remember { mutableStateOf(false) }
-                            val df = DateFormat.getDateInstance(DateFormat.SHORT)
-                            Row(
-                                modifier = Modifier
-                                    .padding(top = 2.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(
-                                    text = "${df.format(Date(converter.updateTimestamp))} • ",
-                                    style = MaterialTheme.typography.labelSmall,
-                                )
-                                Text(
-                                    text = stringResource(id = R.string.disclaimer),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.clickable {
-                                        showDisclaimer = true
-                                    }
-                                )
-                            }
-                            if (showDisclaimer) {
-                                AlertDialog(
-                                    onDismissRequest = { showDisclaimer = false },
-                                    confirmButton = {
-                                        TextButton(onClick = { showDisclaimer = false }) {
-                                            Text(text = stringResource(id = R.string.close))
-                                        }
-                                    },
-                                    title = { Text(stringResource(id = R.string.disclaimer)) },
-                                    text = {
-                                        Text(
-                                            stringResource(
-                                                id = R.string.disclaimer_currency_converter,
-                                                df.format(Date(converter.updateTimestamp))
-                                            )
-                                        )
-                                    }
-                                )
-                            }
-                        }
                     }
                     Icon(
                         painter = painterResource(getDimensionIcon(converter.dimension)),

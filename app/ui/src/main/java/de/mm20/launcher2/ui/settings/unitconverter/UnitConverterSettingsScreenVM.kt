@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import de.mm20.launcher2.preferences.search.UnitConverterSettings
 import de.mm20.launcher2.unitconverter.UnitConverterRepository
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
@@ -22,14 +23,8 @@ class UnitConverterSettingsScreenVM: ViewModel(), KoinComponent {
         settings.setEnabled(unitConverter)
     }
 
-    val currencyConverter = settings.currenciesEnabled
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
-    fun setCurrencyConverter(currencyConverter: Boolean) {
-        settings.setCurrenciesEnabled(currencyConverter)
-    }
-
-    val availableConverters = settings.currenciesEnabled.map {
-        repository.getAvailableConverters(includeCurrencies = it)
+    val availableConverters = flow {
+        emit(repository.getAvailableConverters())
     }.shareIn(viewModelScope, SharingStarted.WhileSubscribed(100), 1)
 
     val availableUnits = availableConverters.map {

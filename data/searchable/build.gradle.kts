@@ -53,7 +53,6 @@ dependencies {
     implementation(project(":data:database"))
     implementation(project(":core:preferences"))
     implementation(project(":core:ktx"))
-    implementation(project(":data:wikipedia"))
     implementation(project(":core:crashreporter"))
 
 }

@@ -9,9 +9,6 @@ import de.mm20.launcher2.calendar.CalendarRepository
 import de.mm20.launcher2.calendar.providers.CalendarList
 import de.mm20.launcher2.permissions.PermissionGroup
 import de.mm20.launcher2.permissions.PermissionsManager
-import de.mm20.launcher2.plugin.Plugin
-import de.mm20.launcher2.plugin.PluginType
-import de.mm20.launcher2.plugins.PluginService
 import de.mm20.launcher2.preferences.search.CalendarSearchSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,7 +21,6 @@ class CalendarSearchSettingsScreenVM : ViewModel(), KoinComponent {
     private val settings: CalendarSearchSettings by inject()
     private val calendarRepository: CalendarRepository by inject()
     private val appRepository: AppRepository by inject()
-    private val pluginService: PluginService by inject()
     private val permissionsManager: PermissionsManager by inject()
 
     val hasCalendarPermission = permissionsManager.hasPermission(PermissionGroup.Calendar)
@@ -33,11 +29,6 @@ class CalendarSearchSettingsScreenVM : ViewModel(), KoinComponent {
     val isTasksAppInstalled = appRepository.findOne("org.tasks", Process.myUserHandle())
         .map { it != null }
         .shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 1)
-
-    val availablePlugins = pluginService.getPluginsWithState(
-        type = PluginType.Calendar,
-        enabled = true,
-    )
 
     val enabledProviders = settings.enabledProviders
 

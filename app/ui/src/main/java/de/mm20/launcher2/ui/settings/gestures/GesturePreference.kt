@@ -157,17 +157,6 @@ internal fun GesturePreference(
                                     }
                                 )
                             }
-                            if (options.contains(GestureAction.Feed::class)) {
-                                GestureItem(
-                                    title = stringResource(R.string.gesture_action_feed),
-                                    icon = R.drawable.news_24px,
-                                    selected = value is GestureAction.Feed,
-                                    onClick = {
-                                        onValueChanged(GestureAction.Feed, null)
-                                        showSheet = false
-                                    }
-                                )
-                            }
                             if (options.contains(GestureAction.Widgets::class)) {
                                 for (widget in widgetOptions) {
                                     GestureItem(
