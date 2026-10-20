@@ -45,7 +45,6 @@ import de.mm20.launcher2.preferences.WidgetScreenTarget
 import de.mm20.launcher2.search.SavableSearchable
 import de.mm20.launcher2.ui.base.BaseActivity
 import de.mm20.launcher2.ui.base.ProvideCompositionLocals
-import de.mm20.launcher2.ui.component.NavBarEffects
 import de.mm20.launcher2.ui.ktx.animateTo
 import de.mm20.launcher2.ui.launcher.scaffold.Gesture
 import de.mm20.launcher2.ui.launcher.scaffold.LauncherScaffold
@@ -133,8 +132,6 @@ abstract class SharedLauncherActivity(
                         val statusBarColor by viewModel.statusBarColor.collectAsState()
                         val navBarColor by viewModel.navBarColor.collectAsState()
 
-                        val chargingAnimation by viewModel.chargingAnimation.collectAsState()
-
                         val lightStatus =
                             !dimBackground && (statusBarColor == SystemBarColors.Dark || statusBarColor == SystemBarColors.Auto && wallpaperColors.supportsDarkText)
                         val lightNav =
@@ -150,8 +147,6 @@ abstract class SharedLauncherActivity(
                         val searchBarColor by viewModel.searchBarColor.collectAsState()
                         val searchBarAutofocus by viewModel.autoFocusSearch.collectAsState(false)
                         val widgetsOnHomeScreen by viewModel.widgetsOnHomeScreen.collectAsState()
-                        val wallpaperBlur by viewModel.wallpaperBlur.collectAsState()
-                        val wallpaperBlurRadius by viewModel.wallpaperBlurRadius.collectAsState()
 
                         val fixedRotation by viewModel.fixedRotation.collectAsState()
 
@@ -221,9 +216,6 @@ abstract class SharedLauncherActivity(
                                 .fillMaxSize(),
                             contentAlignment = Alignment.BottomCenter
                         ) {
-                            if (chargingAnimation == true) {
-                                NavBarEffects(modifier = Modifier.fillMaxSize())
-                            }
 
                             val config = remember(
                                 mode,
@@ -240,8 +232,6 @@ abstract class SharedLauncherActivity(
                                 hideNav,
                                 widgetsOnHomeScreen,
                                 searchBarAutofocus,
-                                wallpaperBlur,
-                                wallpaperBlurRadius,
                             ) {
                                 if (mode == LauncherActivityMode.Assistant) {
                                     val searchComponent = SearchComponent(
@@ -397,7 +387,6 @@ abstract class SharedLauncherActivity(
                                         showStatusBar = !hideStatus,
                                         showNavBar = !hideNav,
                                         darkSearchBar = darkSearchBar,
-                                        wallpaperBlurRadius = if (wallpaperBlur) wallpaperBlurRadius.dp else 0.dp,
                                     )
 
                                     if (config.isUseless()) config.copy(

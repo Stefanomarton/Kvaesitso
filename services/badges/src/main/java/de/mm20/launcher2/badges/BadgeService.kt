@@ -3,10 +3,8 @@ package de.mm20.launcher2.badges
 import android.content.Context
 import de.mm20.launcher2.badges.providers.AppShortcutBadgeProvider
 import de.mm20.launcher2.badges.providers.BadgeProvider
-import de.mm20.launcher2.badges.providers.CloudBadgeProvider
 import de.mm20.launcher2.badges.providers.HiddenItemBadgeProvider
 import de.mm20.launcher2.badges.providers.NotificationBadgeProvider
-import de.mm20.launcher2.badges.providers.PluginBadgeProvider
 import de.mm20.launcher2.badges.providers.SuspendedAppsBadgeProvider
 import de.mm20.launcher2.badges.providers.ProfileBadgeProvider
 import de.mm20.launcher2.preferences.ui.BadgeSettings
@@ -47,17 +45,11 @@ internal class BadgeServiceImpl(
                 if (it.notifications) {
                     providers += NotificationBadgeProvider()
                 }
-                if (it.cloudFiles) {
-                    providers += CloudBadgeProvider(context)
-                }
                 if (it.shortcuts) {
                     providers += AppShortcutBadgeProvider(context)
                 }
                 if (it.suspendedApps) {
                     providers += SuspendedAppsBadgeProvider()
-                }
-                if (it.plugins) {
-                    providers += PluginBadgeProvider(context)
                 }
                 badgeProviders.value = providers
             }

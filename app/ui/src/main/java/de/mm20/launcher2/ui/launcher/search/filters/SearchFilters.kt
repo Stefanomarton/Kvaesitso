@@ -31,21 +31,6 @@ fun SearchFilters(
         modifier = modifier
             .padding(horizontal = 4.dp),
     ) {
-        FilterChip(
-            selected = filters.allowNetwork,
-            onClick = {
-                onFiltersChange(filters.copy(allowNetwork = !filters.allowNetwork))
-            },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(R.drawable.language_20px),
-                    contentDescription = null,
-                    modifier = Modifier.size(FilterChipDefaults.IconSize)
-                )
-            },
-            label = { Text(stringResource(R.string.search_filter_online)) }
-        )
-        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
         FlowRow {
             FilterChip(
                 modifier = Modifier.padding(end = 16.dp),
@@ -65,25 +50,6 @@ fun SearchFilters(
                     )
                 },
                 label = { Text(stringResource(R.string.search_filter_apps)) }
-            )
-            FilterChip(
-                modifier = Modifier.padding(end = 16.dp),
-                selected = filters.files && (!allCategoriesEnabled || settings),
-                onClick = {
-                    if (settings) {
-                        onFiltersChange(filters.copy(files = !filters.files))
-                    } else {
-                        onFiltersChange(filters.toggleFiles())
-                    }
-                },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(R.drawable.description_20px),
-                        contentDescription = null,
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
-                    )
-                },
-                label = { Text(stringResource(R.string.preference_search_files)) }
             )
             FilterChip(
                 modifier = Modifier.padding(end = 16.dp),
@@ -141,63 +107,6 @@ fun SearchFilters(
                     )
                 },
                 label = { Text(stringResource(R.string.preference_search_appshortcuts)) }
-            )
-            FilterChip(
-                modifier = Modifier.padding(end = 16.dp),
-                selected = filters.articles && (!allCategoriesEnabled || settings),
-                onClick = {
-                    if (settings) {
-                        onFiltersChange(filters.copy(articles = !filters.articles))
-                    } else {
-                        onFiltersChange(filters.toggleArticles())
-                    }
-                },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(R.drawable.wikipedia),
-                        contentDescription = null,
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
-                    )
-                },
-                label = { Text(stringResource(R.string.preference_search_wikipedia)) }
-            )
-            FilterChip(
-                modifier = Modifier.padding(end = 16.dp),
-                selected = filters.websites && (!allCategoriesEnabled || settings),
-                onClick = {
-                    if (settings) {
-                        onFiltersChange(filters.copy(websites = !filters.websites))
-                    } else {
-                        onFiltersChange(filters.toggleWebsites())
-                    }
-                },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(R.drawable.public_20px),
-                        contentDescription = null,
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
-                    )
-                },
-                label = { Text(stringResource(R.string.preference_search_websites)) }
-            )
-            FilterChip(
-                modifier = Modifier.padding(end = 16.dp),
-                selected = filters.places && (!allCategoriesEnabled || settings),
-                onClick = {
-                    if (settings) {
-                        onFiltersChange(filters.copy(places = !filters.places))
-                    } else {
-                        onFiltersChange(filters.togglePlaces())
-                    }
-                },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(R.drawable.location_on_20px),
-                        contentDescription = null,
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
-                    )
-                },
-                label = { Text(stringResource(R.string.preference_search_locations)) }
             )
             FilterChip(
                 selected = filters.tools && (!allCategoriesEnabled || settings),

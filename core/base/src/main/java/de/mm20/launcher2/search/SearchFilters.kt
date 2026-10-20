@@ -17,7 +17,8 @@ data class SearchFilters(
     val events: Boolean = true,
     val tools: Boolean = true,
 ) {
-    private val categories = listOf(apps, websites, articles, places, files, shortcuts, contacts, events, tools)
+    // websites, articles, places and files stay for saved filters; their features are gone from this fork
+    private val categories = listOf(apps, shortcuts, contacts, events, tools)
 
     val allCategoriesEnabled
         get() = categories.all { it }

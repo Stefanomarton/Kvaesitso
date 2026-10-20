@@ -115,28 +115,6 @@ class UiSettings internal constructor(
         }
     }
 
-    val blurWallpaper
-        get() = launcherDataStore.data.map {
-            it.wallpaperBlur
-        }.distinctUntilChanged()
-
-    fun setBlurWallpaper(blurWallpaper: Boolean) {
-        launcherDataStore.update {
-            it.copy(wallpaperBlur = blurWallpaper)
-        }
-    }
-
-    val wallpaperBlurRadius
-        get() = launcherDataStore.data.map {
-            it.wallpaperBlurRadius
-        }.distinctUntilChanged()
-
-    fun setWallpaperBlurRadius(wallpaperBlurRadius: Int) {
-        launcherDataStore.update {
-            it.copy(wallpaperBlurRadius = wallpaperBlurRadius)
-        }
-    }
-
     val colorScheme
         get() = launcherDataStore.data.map {
             it.uiColorScheme
@@ -194,17 +172,6 @@ class UiSettings internal constructor(
     fun setNavigationBarColor(navigationBarColor: SystemBarColors) {
         launcherDataStore.update {
             it.copy(systemBarsNavColors = navigationBarColor)
-        }
-    }
-
-    val chargingAnimation
-        get() = launcherDataStore.data.map {
-            it.animationsCharging
-        }.distinctUntilChanged()
-
-    fun setChargingAnimation(chargingAnimation: Boolean) {
-        launcherDataStore.update {
-            it.copy(animationsCharging = chargingAnimation)
         }
     }
 
@@ -273,7 +240,6 @@ class UiSettings internal constructor(
             it.searchBarKeyboard
         }.distinctUntilChanged()
 
-
     val orientation
         get() = launcherDataStore.data.map {
             it.uiOrientation
@@ -284,7 +250,6 @@ class UiSettings internal constructor(
             it.copy(uiOrientation = orientation)
         }
     }
-
 
     val colorsId
         get() = launcherDataStore.data.map {

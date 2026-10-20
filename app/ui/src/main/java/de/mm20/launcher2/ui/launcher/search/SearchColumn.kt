@@ -38,7 +38,6 @@ import de.mm20.launcher2.search.AppShortcut
 import de.mm20.launcher2.search.Application
 import de.mm20.launcher2.search.CalendarEvent
 import de.mm20.launcher2.search.Contact
-import de.mm20.launcher2.search.File
 import de.mm20.launcher2.ui.component.LauncherCard
 import de.mm20.launcher2.ui.launcher.search.apps.AppResults
 import de.mm20.launcher2.ui.launcher.search.calculator.CalculatorResults
@@ -46,7 +45,6 @@ import de.mm20.launcher2.ui.launcher.search.calendar.CalendarResults
 import de.mm20.launcher2.ui.launcher.search.contacts.ContactResults
 import de.mm20.launcher2.ui.launcher.search.favorites.SearchFavorites
 import de.mm20.launcher2.ui.launcher.search.favorites.SearchFavoritesVM
-import de.mm20.launcher2.ui.launcher.search.files.FileResults
 import de.mm20.launcher2.ui.launcher.search.filters.SearchFilters
 import de.mm20.launcher2.ui.launcher.search.shortcut.ShortcutResults
 import de.mm20.launcher2.ui.launcher.search.unitconverter.UnitConverterResults
@@ -90,7 +88,6 @@ fun SearchColumn(
 
     val appShortcuts = viewModel.appShortcutResults
     val contacts = viewModel.contactResults
-    val files = viewModel.fileResults
     val events = viewModel.calendarResults
     val unitConverter = viewModel.unitConverterResults
     val calculator = viewModel.calculatorResults
@@ -104,7 +101,6 @@ fun SearchColumn(
     val missingCalendarPermission by viewModel.missingCalendarPermission.collectAsState(false)
     val missingShortcutsPermission by viewModel.missingAppShortcutPermission.collectAsState(false)
     val missingContactsPermission by viewModel.missingContactsPermission.collectAsState(false)
-    val missingFilesPermission by viewModel.missingFilesPermission.collectAsState(false)
     val hasProfilesPermission by viewModel.hasProfilesPermission.collectAsState(false)
 
     val pinnedTags by favoritesVM.pinnedTags.collectAsState(emptyList())
@@ -118,7 +114,6 @@ fun SearchColumn(
     var selectedAppProfileIndex by remember { mutableIntStateOf(-1) }
     var selectedAppIndex: Int by remember(query) { mutableIntStateOf(-1) }
     var selectedContactIndex: Int by remember(query) { mutableIntStateOf(-1) }
-    var selectedFileIndex: Int by remember(query) { mutableIntStateOf(-1) }
     var selectedCalendarIndex: Int by remember(query) { mutableIntStateOf(-1) }
     var selectedShortcutIndex: Int by remember(query) { mutableIntStateOf(-1) }
 
@@ -314,26 +309,6 @@ fun SearchColumn(
                         },
                     )
 
-                    FileResults(
-                        files = files,
-                        onPermissionRequest = {
-                            viewModel.requestFilesPermission(context as AppCompatActivity)
-                        },
-                        onPermissionRequestRejected = {
-                            viewModel.disableFilesSearch()
-                        },
-                        reverse = reverse,
-                        highlightedItem = bestMatch as? File,
-                        missingPermission = missingFilesPermission,
-                        selectedIndex = selectedFileIndex,
-                        onSelect = {
-                            selectedFileIndex = it
-                        },
-                        truncate = expandedCategory != SearchCategory.Files,
-                        onShowAll = {
-                            viewModel.expandCategory(SearchCategory.Files)
-                        }
-                    )
                 }
             }
         }

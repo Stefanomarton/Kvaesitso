@@ -101,7 +101,6 @@ import de.mm20.launcher2.searchactions.actions.SearchAction
 import de.mm20.launcher2.ui.component.SearchBarLevel
 import de.mm20.launcher2.ui.ktx.toPixels
 import de.mm20.launcher2.ui.launcher.SharedLauncherActivity
-import de.mm20.launcher2.ui.launcher.helper.WallpaperBlur
 import de.mm20.launcher2.ui.launcher.scaffold.animation.Offset3D
 import de.mm20.launcher2.ui.launcher.scaffold.animation.PushScaffoldAnimationController
 import de.mm20.launcher2.ui.launcher.scaffold.animation.RubberbandScaffoldAnimationController
@@ -175,7 +174,6 @@ internal data class ScaffoldConfiguration(
     /**
      * Wallpaper blur radius. 0 to disable.
      */
-    val wallpaperBlurRadius: Dp = 32.dp,
     /**
      * Show the navigation bar
      */
@@ -1145,10 +1143,6 @@ internal fun LauncherScaffold(
             }
         }
 
-        if (config.wallpaperBlurRadius > 0.dp) {
-            val maxRadius = config.wallpaperBlurRadius.toPixels()
-            WallpaperBlur { (maxRadius * state.currentProgress).toInt() }
-        }
 
         if (!config.finishOnBack || state.currentProgress > 0) {
             PredictiveBackHandler {

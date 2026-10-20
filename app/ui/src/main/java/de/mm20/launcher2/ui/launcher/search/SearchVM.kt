@@ -13,7 +13,6 @@ import de.mm20.launcher2.permissions.PermissionGroup
 import de.mm20.launcher2.permissions.PermissionsManager
 import de.mm20.launcher2.preferences.search.CalendarSearchSettings
 import de.mm20.launcher2.preferences.search.ContactSearchSettings
-import de.mm20.launcher2.preferences.search.FileSearchSettings
 import de.mm20.launcher2.preferences.search.SearchFilterSettings
 import de.mm20.launcher2.preferences.search.ShortcutSearchSettings
 import de.mm20.launcher2.preferences.ui.SearchUiSettings
@@ -23,7 +22,6 @@ import de.mm20.launcher2.search.AppShortcut
 import de.mm20.launcher2.search.Application
 import de.mm20.launcher2.search.CalendarEvent
 import de.mm20.launcher2.search.Contact
-import de.mm20.launcher2.search.File
 import de.mm20.launcher2.search.ResultScore
 import de.mm20.launcher2.search.SavableSearchable
 import de.mm20.launcher2.search.SearchFilters
@@ -57,7 +55,6 @@ class SearchVM : ViewModel(), KoinComponent {
     private val permissionsManager: PermissionsManager by inject()
     private val profileManager: ProfileManager by inject()
 
-    private val fileSearchSettings: FileSearchSettings by inject()
     private val contactSearchSettings: ContactSearchSettings by inject()
     private val calendarSearchSettings: CalendarSearchSettings by inject()
     private val shortcutSearchSettings: ShortcutSearchSettings by inject()
@@ -94,7 +91,6 @@ class SearchVM : ViewModel(), KoinComponent {
     val privateSpaceAppResults = mutableStateListOf<Application>()
 
     val appShortcutResults = mutableStateListOf<AppShortcut>()
-    val fileResults = mutableStateListOf<File>()
     val contactResults = mutableStateListOf<Contact>()
     val calendarResults = mutableStateListOf<CalendarEvent>()
     val calculatorResults = mutableStateListOf<Calculator>()
@@ -176,7 +172,6 @@ class SearchVM : ViewModel(), KoinComponent {
                 filters.apps -> SearchCategory.Apps
                 filters.events -> SearchCategory.Calendar
                 filters.contacts -> SearchCategory.Contacts
-                filters.files -> SearchCategory.Files
                 filters.shortcuts -> SearchCategory.Shortcuts
                 else -> null
             }
@@ -265,11 +260,6 @@ class SearchVM : ViewModel(), KoinComponent {
                             ?.filterNot { hiddenKeys.contains(it.key) }
                             ?.applyRanking(query)
                         )
-                        fileResults.updateItems(
-                            results.files
-                            ?.filterNot { hiddenKeys.contains(it.key) }
-                            ?.applyRanking(query)
-                        )
 
                         contactResults.updateItems(
                             results.contacts?.filterNot { hiddenKeys.contains(it.key) }
@@ -292,7 +282,6 @@ class SearchVM : ViewModel(), KoinComponent {
                                 appShortcutResults.isNotEmpty() -> appShortcutResults.first()
                                 calendarResults.isNotEmpty() -> calendarResults.first()
                                 contactResults.isNotEmpty() -> contactResults.first()
-                                fileResults.isNotEmpty() -> fileResults.first()
                                 searchActionResults.isNotEmpty() -> searchActionResults.first()
                                 else -> null
                             }
@@ -330,18 +319,7 @@ class SearchVM : ViewModel(), KoinComponent {
         contactSearchSettings.setProviderEnabled("local", false)
     }
 
-    val missingFilesPermission = combine(
-        permissionsManager.hasPermission(PermissionGroup.ExternalStorage),
-        fileSearchSettings.localFiles
-    ) { perm, enabled -> !perm && enabled }
 
-    fun requestFilesPermission(context: AppCompatActivity) {
-        permissionsManager.requestPermission(context, PermissionGroup.ExternalStorage)
-    }
-
-    fun disableFilesSearch() {
-        fileSearchSettings.setLocalFiles(false)
-    }
 
     val missingAppShortcutPermission = combine(
         permissionsManager.hasPermission(PermissionGroup.AppShortcuts),
@@ -408,7 +386,6 @@ enum class SearchCategory {
     Calculator,
     Calendar,
     Contacts,
-    Files,
     UnitConverter,
     Shortcuts,
 }

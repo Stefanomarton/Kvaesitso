@@ -76,8 +76,6 @@ import de.mm20.launcher2.ui.settings.easteregg.EasterEggSettingsRoute
 import de.mm20.launcher2.ui.settings.easteregg.EasterEggSettingsScreen
 import de.mm20.launcher2.ui.settings.favorites.FavoritesSettingsRoute
 import de.mm20.launcher2.ui.settings.favorites.FavoritesSettingsScreen
-import de.mm20.launcher2.ui.settings.filesearch.FileSearchSettingsRoute
-import de.mm20.launcher2.ui.settings.filesearch.FileSearchSettingsScreen
 import de.mm20.launcher2.ui.settings.filterbar.FilterBarSettingsRoute
 import de.mm20.launcher2.ui.settings.filterbar.FilterBarSettingsScreen
 import de.mm20.launcher2.ui.settings.gestures.GestureSettingsScreen
@@ -201,9 +199,6 @@ class SettingsActivity : BaseActivity() {
             }
             entry<UnitConverterHelpSettingsRoute> {
                 UnitConverterHelpSettingsScreen()
-            }
-            entry<FileSearchSettingsRoute> {
-                FileSearchSettingsScreen()
             }
             entry<CalendarSearchSettingsRoute> {
                 CalendarSearchSettingsScreen()

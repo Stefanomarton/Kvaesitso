@@ -130,7 +130,6 @@ dependencies {
     implementation(project(":data:applications"))
     implementation(project(":data:appshortcuts"))
     implementation(project(":data:calculator"))
-    implementation(project(":data:files"))
     implementation(project(":data:widgets"))
     implementation(project(":data:searchable"))
     implementation(project(":data:themes"))

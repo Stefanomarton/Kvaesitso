@@ -44,8 +44,6 @@ class LauncherScaffoldVM : ViewModel(), KoinComponent {
     val navBarColor = uiSettings.navigationBarColor
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
-    val chargingAnimation = uiSettings.chargingAnimation
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
     val hideNavBar = uiSettings.hideNavigationBar
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
@@ -71,10 +69,6 @@ class LauncherScaffoldVM : ViewModel(), KoinComponent {
 
     val autoFocusSearch = uiSettings.openKeyboardOnSearch
 
-    val wallpaperBlur = uiSettings.blurWallpaper
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), true)
-    val wallpaperBlurRadius = uiSettings.wallpaperBlurRadius
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), 32)
 
 
     val fillClockHeight = uiSettings.clockFillScreen

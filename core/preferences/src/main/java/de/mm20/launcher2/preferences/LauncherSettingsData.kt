@@ -29,8 +29,6 @@ data class LauncherSettingsData internal constructor(
     val uiOrientation: ScreenOrientation = ScreenOrientation.Auto,
 
     val wallpaperDim: Boolean = false,
-    val wallpaperBlur: Boolean = true,
-    val wallpaperBlurRadius: Int = 32,
 
     val mediaAllowList: Set<String> = emptySet(),
     val mediaDenyList: Set<String> = emptySet(),
@@ -159,7 +157,6 @@ data class LauncherSettingsData internal constructor(
     val gesturesLongPress: GestureAction = GestureAction.NoAction,
     val gesturesHomeButton: GestureAction = GestureAction.NoAction,
 
-    val animationsCharging: Boolean = true,
 
     val stateTagsMultiline: Boolean = false,
 
@@ -458,6 +455,15 @@ enum class KeyboardFilterBarItem {
     @SerialName("tools") Tools,
     @SerialName("hidden") HiddenResults,
 }
+
+/**
+ * Items whose features this fork removed. The entries stay so saved filter bars still decode
+ * (an unknown enum value would fail the whole settings file).
+ */
+val KeyboardFilterBarItem.isRemoved: Boolean
+    get() = this == KeyboardFilterBarItem.OnlineResults || this == KeyboardFilterBarItem.Websites ||
+            this == KeyboardFilterBarItem.Articles || this == KeyboardFilterBarItem.Places ||
+            this == KeyboardFilterBarItem.Files
 
 @Serializable
 enum class TimeFormat {
