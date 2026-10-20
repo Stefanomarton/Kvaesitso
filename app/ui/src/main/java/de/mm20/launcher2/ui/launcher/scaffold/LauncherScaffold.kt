@@ -990,6 +990,10 @@ internal fun LauncherScaffold(
     val filterBarItems by searchVM.filterBarItems.collectAsState(emptyList())
     val launchOnEnter by searchVM.launchOnEnter.collectAsState(false)
 
+    LaunchedEffect(searchVM.searchQuery.value) {
+        searchVM.launchKeywordShortcut(activity, searchVM.searchQuery.value)
+    }
+
     val hazeState = rememberHazeState()
 
     BoxWithConstraints(

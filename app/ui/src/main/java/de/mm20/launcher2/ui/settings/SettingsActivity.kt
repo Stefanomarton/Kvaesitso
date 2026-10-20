@@ -105,6 +105,8 @@ import de.mm20.launcher2.ui.settings.media.MediaIntegrationSettingsScreen
 import de.mm20.launcher2.ui.settings.search.SearchSettingsRoute
 import de.mm20.launcher2.ui.settings.search.SearchSettingsScreen
 import de.mm20.launcher2.ui.settings.searchactions.SearchActionsSettingsRoute
+import de.mm20.launcher2.ui.settings.keywordshortcuts.KeywordShortcutsSettingsRoute
+import de.mm20.launcher2.ui.settings.keywordshortcuts.KeywordShortcutsSettingsScreen
 import de.mm20.launcher2.ui.settings.searchactions.SearchActionsSettingsScreen
 import de.mm20.launcher2.ui.settings.shapes.ShapeSchemeSettingsRoute
 import de.mm20.launcher2.ui.settings.shapes.ShapeSchemeSettingsScreen
@@ -208,6 +210,9 @@ class SettingsActivity : BaseActivity() {
             }
             entry<SearchActionsSettingsRoute> {
                 SearchActionsSettingsScreen()
+            }
+            entry<KeywordShortcutsSettingsRoute> {
+                KeywordShortcutsSettingsScreen()
             }
             entry<HiddenItemsSettingsRoute> {
                 HiddenItemsSettingsScreen()

@@ -79,4 +79,23 @@ class SearchUiSettings internal constructor(
         }
     }
 
+    val keywordShortcuts
+        get() = launcherDataStore.data.map { it.searchKeywordShortcuts }.distinctUntilChanged()
+
+    /** Saves [keyword] (normalized like search queries) for [searchableKey]; [replaces] is the keyword being edited. */
+    fun setKeywordShortcut(keyword: String, searchableKey: String, replaces: String? = null) {
+        launcherDataStore.update {
+            it.copy(searchKeywordShortcuts = it.searchKeywordShortcuts - listOfNotNull(replaces) + (normalizeKeyword(keyword) to searchableKey))
+        }
+    }
+
+    fun removeKeywordShortcut(keyword: String) {
+        launcherDataStore.update {
+            it.copy(searchKeywordShortcuts = it.searchKeywordShortcuts - keyword)
+        }
+    }
+
+    companion object {
+        fun normalizeKeyword(keyword: String) = keyword.trim().lowercase()
+    }
 }

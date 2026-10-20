@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preference_keyword_shortcuts">Scorciatoie a parola</string>
+    <string name="preference_keyword_shortcuts_summary">Scrivi una parola nella ricerca per aprire subito un\'app</string>
+    <string name="keyword_shortcut_add">Aggiungi scorciatoia</string>
+    <string name="keyword_shortcut_add_summary">Per esempio \"wa\" → WhatsApp</string>
+    <string name="keyword_shortcut_keyword">Parola</string>
+    <string name="keyword_shortcut_keyword_required">Scrivi prima la parola, poi scegli cosa apre</string>
+    <string name="keyword_shortcut_missing">Elemento non trovato</string>
+    <string name="keyword_shortcut_delete">Elimina scorciatoia</string>
+</resources>

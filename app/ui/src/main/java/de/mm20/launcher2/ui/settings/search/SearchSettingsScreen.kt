@@ -41,6 +41,7 @@ import de.mm20.launcher2.ui.settings.favorites.FavoritesSettingsRoute
 import de.mm20.launcher2.ui.settings.filterbar.FilterBarSettingsRoute
 import de.mm20.launcher2.ui.settings.hiddenitems.HiddenItemsSettingsRoute
 import de.mm20.launcher2.ui.settings.searchactions.SearchActionsSettingsRoute
+import de.mm20.launcher2.ui.settings.keywordshortcuts.KeywordShortcutsSettingsRoute
 import de.mm20.launcher2.ui.settings.tags.TagsSettingsRoute
 import de.mm20.launcher2.ui.settings.unitconverter.UnitConverterSettingsRoute
 import kotlinx.serialization.Serializable
@@ -224,6 +225,14 @@ fun SearchSettingsScreen() {
                     icon = R.drawable.arrow_outward_24px,
                     onClick = {
                         backStack.add(SearchActionsSettingsRoute)
+                    }
+                )
+                Preference(
+                    title = stringResource(R.string.preference_keyword_shortcuts),
+                    summary = stringResource(R.string.preference_keyword_shortcuts_summary),
+                    icon = R.drawable.bolt_24px,
+                    onClick = {
+                        backStack.add(KeywordShortcutsSettingsRoute)
                     }
                 )
             }

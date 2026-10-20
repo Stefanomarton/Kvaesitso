@@ -114,6 +114,8 @@ data class LauncherSettingsData internal constructor(
     val searchBarColors: SearchBarColors = SearchBarColors.Auto,
     val searchBarKeyboard: Boolean = true,
     val searchLaunchOnEnter: Boolean = true,
+    /** Typing exactly one of these keywords in search launches the searchable with that key. */
+    val searchKeywordShortcuts: Map<String, String> = emptyMap(),
     val searchBarBottom: Boolean = false,
     val searchBarFixed: Boolean = false,
 

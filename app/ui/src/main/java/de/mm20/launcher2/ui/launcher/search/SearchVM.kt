@@ -138,6 +138,19 @@ class SearchVM : ViewModel(), KoinComponent {
         }
     }
 
+    private val keywordShortcuts = searchUiSettings.keywordShortcuts
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
+
+    /** Launches the item bound to [query] in the keyword shortcuts, if any, and clears the search. */
+    suspend fun launchKeywordShortcut(context: Context, query: String) {
+        val key = keywordShortcuts.value[SearchUiSettings.normalizeKeyword(query)] ?: return
+        val searchable = searchableRepository.getByKeys(listOf(key)).first().firstOrNull() ?: return
+        if (searchable.launch(context, null)) {
+            favoritesService.reportLaunch(searchable)
+            search("")
+        }
+    }
+
     fun setFilters(filters: SearchFilters) {
         this.filters.value = filters
         search(searchQuery.value, forceRestart = true)

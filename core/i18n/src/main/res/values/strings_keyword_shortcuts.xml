@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preference_keyword_shortcuts">Keyword shortcuts</string>
+    <string name="preference_keyword_shortcuts_summary">Type a word in search to open an app right away</string>
+    <string name="keyword_shortcut_add">Add shortcut</string>
+    <string name="keyword_shortcut_add_summary">For example \"wa\" → WhatsApp</string>
+    <string name="keyword_shortcut_keyword">Keyword</string>
+    <string name="keyword_shortcut_keyword_required">Type a keyword first, then pick what it opens</string>
+    <string name="keyword_shortcut_missing">Item not found</string>
+    <string name="keyword_shortcut_delete">Delete shortcut</string>
+</resources>
