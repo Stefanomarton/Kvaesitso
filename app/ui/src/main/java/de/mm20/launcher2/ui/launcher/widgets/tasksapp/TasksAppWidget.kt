@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,6 +25,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,7 +38,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -119,7 +129,16 @@ fun TasksAppWidget(widget: TasksAppWidget) {
                 Icon(painter = painterResource(R.drawable.open_in_new_24px), contentDescription = stringResource(R.string.tasksapp))
             }
         }
-        Column(Modifier.padding(bottom = 12.dp)) {
+        // at most under half the screen, scrolling inside, so the widgets below (clock, music) stay in sight;
+        // it opens scrolled to now
+        val scroll = rememberScrollState()
+        val density = LocalDensity.current
+        var nowY by remember { mutableIntStateOf(-1) }
+        var placed by remember { mutableStateOf(false) }
+        LaunchedEffect(nowY) {
+            if (nowY >= 0 && !placed) { placed = true; scroll.scrollTo(maxOf(0, nowY - with(density) { 72.dp.roundToPx() })) }
+        }
+        Column(Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.45f).dp).verticalScroll(scroll).padding(bottom = 12.dp)) {
             when {
                 !configured -> Box(Modifier.padding(horizontal = 12.dp)) { Info(stringResource(R.string.tasksapp_not_configured)) }
                 d.late.isEmpty() && d.anytime.isEmpty() && d.timed.isEmpty() ->
@@ -141,11 +160,11 @@ fun TasksAppWidget(widget: TasksAppWidget) {
                             val a = t.start()
                             val b = a + t.durationMin
                             end?.let { e -> if (a - e >= 30) Gap(a - e) }
-                            if (!nowShown && now < a) { nowShown = true; NowLine(now) }
+                            if (!nowShown && now < a) { nowShown = true; NowLine(now) { nowY = it } }
                             Slot(t, a, b, now, tasks, open, done)
                             end = maxOf(end ?: 0, b)
                         }
-                        if (!nowShown) NowLine(now)
+                        if (!nowShown) NowLine(now) { nowY = it }
                     }
                 }
             }
@@ -235,7 +254,10 @@ private fun Gap(min: Int) = Row(Modifier.fillMaxWidth().padding(vertical = 2.dp)
 
 /** Where now is: the time, a dot and a line. */
 @Composable
-private fun NowLine(now: Int) = Row(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+private fun NowLine(now: Int, at: (Int) -> Unit) = Row(
+    Modifier.fillMaxWidth().onGloballyPositioned { at(it.positionInParent().y.toInt()) }.padding(vertical = 4.dp),
+    verticalAlignment = Alignment.CenterVertically,
+) {
     val red = MaterialTheme.colorScheme.error
     Text(hm(now), Modifier.width(GUTTER.dp).padding(start = 14.dp), style = MaterialTheme.typography.labelSmall, color = red, fontWeight = FontWeight.SemiBold)
     Box(Modifier.size(8.dp).clip(CircleShape).background(red))
