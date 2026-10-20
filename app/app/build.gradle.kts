@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.androidx.baselineprofile)
 }
 
 android {
@@ -61,6 +62,13 @@ android {
             applicationIdSuffix = ".debug"
             isDebuggable = true
         }
+        // Optimized build that installs over the debug app (same package and key), so settings are kept.
+        create("personal") {
+            initWith(getByName("release"))
+            matchingFallbacks += "release"
+            applicationIdSuffix = ".debug"
+            signingConfig = signingConfigs.getByName("debug")
+        }
         create("nightly") {
             initWith(getByName("release"))
             matchingFallbacks += "release"
@@ -108,6 +116,22 @@ android {
 }
 
 
+baselineProfile {
+    // One profile in src/main applies to every variant, including "personal".
+    mergeIntoMain = true
+    automaticGenerationDuringBuild = false
+}
+
+androidComponents {
+    // The profile generator installs, runs and then uninstalls its target. Give its variants a
+    // throwaway package so it never touches the launcher installed on the phone (.debug / .release).
+    onVariants { variant ->
+        if (variant.buildType == "nonMinifiedRelease" || variant.buildType == "benchmarkRelease") {
+            variant.applicationId.set("de.mm20.launcher2.profiling")
+        }
+    }
+}
+
 dependencies {
     implementation(libs.bundles.kotlin)
 
@@ -115,6 +139,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core)
     implementation(libs.androidx.work)
+    implementation(libs.androidx.profileinstaller)
+    baselineProfile(project(":baselineprofile"))
 
     implementation(libs.coil.core)
     implementation(libs.coil.svg)

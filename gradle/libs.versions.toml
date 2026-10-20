@@ -39,6 +39,9 @@ koin = "4.2.2"
 ktor = "3.5.2"
 junit = "4.13.2"
 junitVersion = "1.2.1"
+androidx-benchmark = "1.5.0"
+androidx-profileinstaller = "1.4.1"
+androidx-uiautomator = "2.4.0"
 espressoCore = "3.6.1"
 
 osmOpeningHours = "0.4.0"
@@ -119,6 +122,9 @@ koin-androidxcompose = { group = "io.insert-koin", name = "koin-androidx-compose
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-benchmark-macro = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "androidx-benchmark" }
+androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "androidx-profileinstaller" }
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "androidx-uiautomator" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
 osmopeninghours = { group = "de.westnordost", name = "osm-opening-hours", version.ref = "osmOpeningHours" }
@@ -140,3 +146,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-plugin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version = "2.2.0" }
+android-test = { id = "com.android.test", version.ref = "android-gradle-plugin" }
+androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidx-benchmark" }

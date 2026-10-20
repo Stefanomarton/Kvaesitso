@@ -15,6 +15,7 @@ dependencyResolutionManagement {
 
 include(":app:app")
 include(":app:ui")
+include(":baselineprofile")
 
 include(":core:base")
 include(":core:crashreporter")
