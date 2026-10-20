@@ -10,8 +10,11 @@ import org.junit.runner.RunWith
 /**
  * Records the hot paths of a fresh install: cold start, the search sheet with the app list,
  * typing a query and the widget screen. Run with:
- * ./gradlew :app:app:generateBaselineProfile -Pandroid.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=BaselineProfile
- * with the phone connected over adb. The target runs as de.mm20.launcher2.profiling.
+ * ANDROID_SERIAL=<device> ./gradlew :baselineprofile:connectedDefaultNonMinifiedReleaseAndroidTest \
+ *     -Pandroid.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=BaselineProfile
+ * then copy the produced *-startup-prof.txt from baselineprofile/build/outputs/connected_android_test_additional_output
+ * to app/app/src/main/generated/baselineProfiles/ as both baseline-prof.txt and startup-prof.txt.
+ * The target runs as de.mm20.launcher2.profiling. Prefer adb over Wi-Fi: USB resets on the Pixel kill the run.
  */
 @RunWith(AndroidJUnit4::class)
 class BaselineProfileGenerator {
@@ -21,8 +24,9 @@ class BaselineProfileGenerator {
 
     @Test
     fun generate() {
+        // Matches the applicationId app/app gives its nonMinifiedRelease/benchmarkRelease variants.
         val packageName = InstrumentationRegistry.getArguments().getString("targetAppId")
-            ?: error("targetAppId not passed as instrumentation runner arg")
+            ?: "de.mm20.launcher2.profiling"
 
         rule.collect(packageName = packageName, includeInStartupProfile = true) {
             pressHome()
