@@ -158,7 +158,7 @@ fun TasksAppWidget(widget: TasksAppWidget) {
     LaunchedEffect(Unit) {
         snapshotFlow { scroll.isScrollInProgress }.collectLatest { moving ->
             if (moving) return@collectLatest
-            delay(800)
+            delay(250)
             if (nowY >= 0 && abs(scroll.value - anchor()) > 4) {
                 well.free = false; well.pull = 0f
                 scope.launch { scroll.animateScrollTo(anchor(), spring(dampingRatio = 0.85f, stiffness = Spring.StiffnessMedium)) }
