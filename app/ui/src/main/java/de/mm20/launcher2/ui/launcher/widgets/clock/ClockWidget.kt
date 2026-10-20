@@ -196,7 +196,8 @@ fun ClockWidget(
                                     .fillMaxWidth()
                                     .padding(end = 8.dp, bottom = 16.dp),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                // alone (nothing beside it), the clock is centred and has no divider
+                                horizontalArrangement = if (partProvider != null) Arrangement.SpaceBetween else Arrangement.Center
                             ) {
                                 if (partProvider != null) {
                                     DynamicZone(
@@ -205,7 +206,7 @@ fun ClockWidget(
                                         provider = partProvider,
                                     )
                                 }
-                                if (clockStyle !is ClockWidgetStyle.Empty) {
+                                if (clockStyle !is ClockWidgetStyle.Empty && partProvider != null) {
                                     Box(
                                         modifier = Modifier
                                             .padding(horizontal = 16.dp)

@@ -147,19 +147,19 @@ fun TasksAppWidget(widget: TasksAppWidget) {
                 pull = 0f
                 touched = System.currentTimeMillis()
                 if (free || nowY < 0) return Velocity.Zero
-                scroll.animateScrollTo(anchor(), spring(dampingRatio = 0.55f, stiffness = Spring.StiffnessMediumLow))
+                scroll.animateScrollTo(anchor(), spring(dampingRatio = 0.7f, stiffness = Spring.StiffnessMedium))
                 return available
             }
         }
     }
     LaunchedEffect(nowY >= 0, curY) { if (nowY >= 0 && touched == 0L) scroll.scrollTo(anchor()) }
-    // left alone for a few seconds, it goes back to now by itself
+    // let go, it springs back to now by itself after a moment: a stiff spring, well under a second
     LaunchedEffect(Unit) {
         while (true) {
-            delay(1000)
-            if (nowY >= 0 && touched > 0 && System.currentTimeMillis() - touched > 6000 && !scroll.isScrollInProgress && abs(scroll.value - anchor()) > 4) {
+            delay(150)
+            if (nowY >= 0 && touched > 0 && System.currentTimeMillis() - touched > 1500 && !scroll.isScrollInProgress && abs(scroll.value - anchor()) > 4) {
                 well.free = false; well.pull = 0f; touched = 0L
-                scroll.animateScrollTo(anchor(), spring(dampingRatio = 0.8f, stiffness = Spring.StiffnessLow))
+                scroll.animateScrollTo(anchor(), spring(dampingRatio = 0.85f, stiffness = Spring.StiffnessMedium))
             }
         }
     }
