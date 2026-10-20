@@ -78,7 +78,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 
-private const val GUTTER = 52
+private const val GUTTER = 64
 
 private fun nowMin() = LocalTime.now().let { it.hour * 60 + it.minute }
 private fun hm(m: Int) = "%02d:%02d".format(m / 60 % 24, m % 60)
@@ -123,14 +123,13 @@ fun TasksAppWidget(widget: TasksAppWidget) {
     // ticks; coming back across now catches it again; back on the home screen it is on now again.
     val scroll = rememberScrollState()
     val density = LocalDensity.current
-    val offset = with(density) { 72.dp.toPx() }          // where the now line rests, from the top
     val breakAt = with(density) { 56.dp.toPx() }
     var nowY by remember { mutableIntStateOf(-1) }
-    var curY by remember { mutableIntStateOf(-1) }        // top of the thing running now, -1 when none
+    var curY by remember { mutableIntStateOf(-1) }        // middle of the thing running now, -1 when none
     val curKey = d.timed.lastOrNull { val a = it.start(); now in a until maxOf(a + it.durationMin, a + 1) }?.id
     if (curKey == null) curY = -1
-    // the thing running now sits at the top, its title in sight; with none, the now line a little below the top
-    val anchor = { if (curY >= 0) maxOf(0, curY - with(density) { 4.dp.roundToPx() }) else maxOf(0, (nowY - offset).toInt()) }
+    // the thing running now (or, with none, the now line) in the middle: as much of the day above as below
+    val anchor = { maxOf(0, (if (curY >= 0) curY else nowY) - scroll.viewportSize / 2) }
     var touched by remember { mutableLongStateOf(0L) }
     val marks = remember { HashMap<String, Int>() }      // top of each thing in the list
     val well = remember {
@@ -153,13 +152,13 @@ fun TasksAppWidget(widget: TasksAppWidget) {
             }
         }
     }
-    LaunchedEffect(nowY >= 0, curY) { if (nowY >= 0 && touched == 0L) scroll.scrollTo(anchor()) }
+    LaunchedEffect(nowY >= 0, curY, scroll.viewportSize) { if (nowY >= 0 && touched == 0L) scroll.scrollTo(anchor()) }
     // let go, it springs back to now by itself after a moment: a stiff spring, well under a second. Watches the scroll
     // itself (moving / still), so any drag or fling counts; the spring runs on its own so its own motion can't stop it
     LaunchedEffect(Unit) {
         snapshotFlow { scroll.isScrollInProgress }.collectLatest { moving ->
             if (moving) return@collectLatest
-            delay(1500)
+            delay(800)
             if (nowY >= 0 && abs(scroll.value - anchor()) > 4) {
                 well.free = false; well.pull = 0f
                 scope.launch { scroll.animateScrollTo(anchor(), spring(dampingRatio = 0.85f, stiffness = Spring.StiffnessMedium)) }
@@ -170,7 +169,7 @@ fun TasksAppWidget(widget: TasksAppWidget) {
         var last = -1
         var side = 0
         snapshotFlow { scroll.value }.collect { v ->
-            val i = marks.values.count { it <= v + offset }
+            val i = marks.values.count { it <= v + scroll.viewportSize / 2 }
             if (last >= 0 && i != last) haptic.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
             last = i
             val s = (v - anchor()).sign
@@ -226,11 +225,13 @@ fun TasksAppWidget(widget: TasksAppWidget) {
                             val b = a + t.durationMin
                             end?.let { e -> if (a - e >= 30) Gap(a - e) }
                             if (!nowShown && now < a) { nowShown = true; NowLine(now) { nowY = it } }
-                            Box(Modifier.mark("t/${t.id}").then(if (t.id == curKey) Modifier.onGloballyPositioned { curY = it.positionInParent().y.toInt() } else Modifier)) { Slot(t, a, b, now, tasks, open, done) }
+                            Box(Modifier.mark("t/${t.id}").then(if (t.id == curKey) Modifier.onGloballyPositioned { curY = it.positionInParent().y.toInt() + it.size.height / 2 } else Modifier)) { Slot(t, a, b, now, tasks, open, done) }
                             end = maxOf(end ?: 0, b)
                         }
                         if (!nowShown) NowLine(now) { nowY = it }
                     }
+                    // room below the last thing, so even the evening's can sit in the middle
+                    Spacer(Modifier.height(with(density) { (scroll.viewportSize / 2).toDp() }))
                 }
             }
         }
@@ -279,8 +280,8 @@ private fun Slot(t: TasksAppTask, a: Int, b: Int, now: Int, all: List<TasksAppTa
     val past = now >= maxOf(b, a + 1)
     Row(Modifier.fillMaxWidth().alpha(if (past) 0.55f else 1f).padding(vertical = 2.dp)) {
         Column(Modifier.width(GUTTER.dp).padding(start = 14.dp, top = 8.dp)) {
-            Text(hm(a), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold, color = if (running) c.primary else c.onSurface)
-            if (b > a) Text(hm(minOf(1440, b)), style = MaterialTheme.typography.labelSmall, color = c.outline)
+            Text(hm(a), maxLines = 1, softWrap = false, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold, color = if (running) c.primary else c.onSurface)
+            if (b > a) Text(hm(minOf(1440, b)), maxLines = 1, softWrap = false, style = MaterialTheme.typography.labelSmall, color = c.outline)
         }
         if (!t.isBlock) Column(
             Modifier.weight(1f).then(if (running) Modifier.padding(end = 12.dp).clip(RoundedCornerShape(14.dp))
@@ -328,7 +329,7 @@ private fun NowLine(now: Int, at: (Int) -> Unit) = Row(
     verticalAlignment = Alignment.CenterVertically,
 ) {
     val red = MaterialTheme.colorScheme.error
-    Text(hm(now), Modifier.width(GUTTER.dp).padding(start = 14.dp), style = MaterialTheme.typography.labelSmall, color = red, fontWeight = FontWeight.SemiBold)
+    Text(hm(now), Modifier.width(GUTTER.dp).padding(start = 14.dp), maxLines = 1, softWrap = false, style = MaterialTheme.typography.labelSmall, color = red, fontWeight = FontWeight.SemiBold)
     Box(Modifier.size(8.dp).clip(CircleShape).background(red))
     Box(Modifier.weight(1f).padding(end = 12.dp).height(1.5.dp).background(red))
 }
