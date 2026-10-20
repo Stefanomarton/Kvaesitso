@@ -43,6 +43,11 @@ data class TaskDto(
     val repeat: String = "",
     val tags: List<String> = emptyList(),
     val notes: String = "",
+    /** The task it is a subtask of, "" when none */
+    val parent: String = "",
+    /** "block" or "" */
+    val kind: String = "",
+    val duration_min: Int = 0,
 )
 
 @Serializable

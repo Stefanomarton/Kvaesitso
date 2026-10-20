@@ -1,5 +1,6 @@
 package de.mm20.launcher2.database.entities
 
+import androidx.room3.ColumnInfo
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
 
@@ -27,4 +28,9 @@ data class TasksAppTaskEntity(
     /** Comma-separated */
     val tags: String?,
     val sortOrder: Long,
+    /** The task it is a subtask of, "" when none. */
+    @ColumnInfo(defaultValue = "''") val parent: String = "",
+    /** "block": a stretch of time for a kind of work, its tasks inside it. */
+    @ColumnInfo(defaultValue = "''") val kind: String = "",
+    @ColumnInfo(defaultValue = "0") val durationMin: Int = 0,
 )

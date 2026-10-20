@@ -105,6 +105,13 @@ class TasksAppRepository internal constructor(
         return context.tryStartActivity(intent, options)
     }
 
+    /** Opens task [id]'s detail in the Tasks app; the app itself when it is too old to know the action. */
+    fun openTask(context: Context, id: String, options: Bundle? = null): Boolean {
+        val intent = Intent("$AndroidApp.OPEN").setClassName(AndroidApp, "$AndroidApp.MainActivity").putExtra("id", id)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        return context.tryStartActivity(intent, options) || openApp(context, options = options)
+    }
+
     fun projects(): Flow<List<TasksAppProject>> = dao.projects().map { list ->
         list.map { TasksAppProject(it.id, it.name, it.color) }
     }
@@ -256,6 +263,9 @@ class TasksAppRepository internal constructor(
         completed = completed,
         isRecurring = !repeatFlag.isNullOrBlank(),
         tags = tags?.split(",")?.filter { it.isNotBlank() } ?: emptyList(),
+        parent = parent,
+        isBlock = kind == "block",
+        durationMin = durationMin,
     )
 
     private fun TaskDto.toEntity(sortOrder: Long): TasksAppTaskEntity {
@@ -274,6 +284,9 @@ class TasksAppRepository internal constructor(
             repeatFlag = repeat.takeIf { it.isNotEmpty() },
             tags = tags.joinToString(","),
             sortOrder = sortOrder,
+            parent = parent,
+            kind = kind,
+            durationMin = duration_min,
         )
     }
 
