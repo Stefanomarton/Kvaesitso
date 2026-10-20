@@ -70,6 +70,7 @@ import de.mm20.launcher2.ui.R
 import de.mm20.launcher2.ui.launcher.widgets.calendar.Info
 import de.mm20.launcher2.widgets.TasksAppWidget
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import java.time.Instant
@@ -153,13 +154,15 @@ fun TasksAppWidget(widget: TasksAppWidget) {
         }
     }
     LaunchedEffect(nowY >= 0, curY) { if (nowY >= 0 && touched == 0L) scroll.scrollTo(anchor()) }
-    // let go, it springs back to now by itself after a moment: a stiff spring, well under a second
+    // let go, it springs back to now by itself after a moment: a stiff spring, well under a second. Watches the scroll
+    // itself (moving / still), so any drag or fling counts; the spring runs on its own so its own motion can't stop it
     LaunchedEffect(Unit) {
-        while (true) {
-            delay(150)
-            if (nowY >= 0 && touched > 0 && System.currentTimeMillis() - touched > 1500 && !scroll.isScrollInProgress && abs(scroll.value - anchor()) > 4) {
-                well.free = false; well.pull = 0f; touched = 0L
-                scroll.animateScrollTo(anchor(), spring(dampingRatio = 0.85f, stiffness = Spring.StiffnessMedium))
+        snapshotFlow { scroll.isScrollInProgress }.collectLatest { moving ->
+            if (moving) return@collectLatest
+            delay(1500)
+            if (nowY >= 0 && abs(scroll.value - anchor()) > 4) {
+                well.free = false; well.pull = 0f
+                scope.launch { scroll.animateScrollTo(anchor(), spring(dampingRatio = 0.85f, stiffness = Spring.StiffnessMedium)) }
             }
         }
     }
