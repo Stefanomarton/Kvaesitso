@@ -1,5 +1,15 @@
 package de.mm20.launcher2.ui.launcher.widgets.tasksapp
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.Velocity
+import kotlin.math.abs
+import kotlin.math.sign
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,7 +36,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -107,11 +116,55 @@ fun TasksAppWidget(widget: TasksAppWidget) {
         scope.launch { repository.setCompleted(t.id, true) }; Unit
     }
 
+    // The list scrolls inside (at most under half the screen, so clock and music below stay in sight) and rests on now:
+    // now is a well – a drag first meets resistance, then breaks free with a thump; each thing passing the now mark
+    // ticks; coming back across now catches it again; back on the home screen it is on now again.
+    val scroll = rememberScrollState()
+    val density = LocalDensity.current
+    val offset = with(density) { 72.dp.toPx() }          // where the now line rests, from the top
+    val breakAt = with(density) { 56.dp.toPx() }
+    var nowY by remember { mutableIntStateOf(-1) }
+    val anchor = { maxOf(0, (nowY - offset).toInt()) }
+    val marks = remember { HashMap<String, Int>() }      // top of each thing in the list
+    val well = remember {
+        object : NestedScrollConnection {
+            var free = false
+            var pull = 0f
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (free || nowY < 0 || source != NestedScrollSource.UserInput) return Offset.Zero
+                pull += available.y
+                if (abs(pull) > breakAt) { free = true; haptic.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate); return Offset.Zero }
+                return Offset(0f, available.y * 0.75f)    // only a quarter of the drag moves it
+            }
+            override suspend fun onPreFling(available: Velocity): Velocity {
+                pull = 0f
+                if (free || nowY < 0) return Velocity.Zero
+                scroll.animateScrollTo(anchor(), spring(dampingRatio = 0.55f, stiffness = Spring.StiffnessMediumLow))
+                return available
+            }
+        }
+    }
+    LaunchedEffect(nowY >= 0) { if (nowY >= 0) scroll.scrollTo(anchor()) }
+    LaunchedEffect(Unit) {
+        var last = -1
+        var side = 0
+        snapshotFlow { scroll.value }.collect { v ->
+            val i = marks.values.count { it <= v + offset }
+            if (last >= 0 && i != last) haptic.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
+            last = i
+            val s = (v - anchor()).sign
+            if (well.free && side != 0 && s != side && nowY >= 0) { well.free = false; well.pull = 0f; haptic.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate) }
+            side = s
+        }
+    }
+
     LaunchedEffect(null) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            if (nowY >= 0) { well.free = false; well.pull = 0f; scroll.scrollTo(anchor()) }
             repository.requestSyncIfStale()
         }
     }
+    fun Modifier.mark(k: String) = onGloballyPositioned { marks[k] = it.positionInParent().y.toInt() }
 
     val c = MaterialTheme.colorScheme
     Column {
@@ -129,16 +182,7 @@ fun TasksAppWidget(widget: TasksAppWidget) {
                 Icon(painter = painterResource(R.drawable.open_in_new_24px), contentDescription = stringResource(R.string.tasksapp))
             }
         }
-        // at most under half the screen, scrolling inside, so the widgets below (clock, music) stay in sight;
-        // it opens scrolled to now
-        val scroll = rememberScrollState()
-        val density = LocalDensity.current
-        var nowY by remember { mutableIntStateOf(-1) }
-        var placed by remember { mutableStateOf(false) }
-        LaunchedEffect(nowY) {
-            if (nowY >= 0 && !placed) { placed = true; scroll.scrollTo(maxOf(0, nowY - with(density) { 72.dp.roundToPx() })) }
-        }
-        Column(Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.45f).dp).verticalScroll(scroll).padding(bottom = 12.dp)) {
+        Column(Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.45f).dp).nestedScroll(well).verticalScroll(scroll).padding(bottom = 12.dp)) {
             when {
                 !configured -> Box(Modifier.padding(horizontal = 12.dp)) { Info(stringResource(R.string.tasksapp_not_configured)) }
                 d.late.isEmpty() && d.anytime.isEmpty() && d.timed.isEmpty() ->
@@ -146,11 +190,11 @@ fun TasksAppWidget(widget: TasksAppWidget) {
                 else -> {
                     if (d.late.isNotEmpty()) {
                         Header("In ritardo")
-                        for (t in d.late) TaskLine(t, open, done, meta = "late")
+                        for (t in d.late) Box(Modifier.mark("l/${t.id}")) { TaskLine(t, open, done, meta = "late") }
                     }
                     if (d.anytime.isNotEmpty()) {
                         Header("In giornata")
-                        for (t in d.anytime) { TaskLine(t, open, done); for (k in tasks.inside(t.id)) TaskLine(k, open, done, depth = 1) }
+                        for (t in d.anytime) Column(Modifier.mark("a/${t.id}")) { TaskLine(t, open, done); for (k in tasks.inside(t.id)) TaskLine(k, open, done, depth = 1) }
                     }
                     if (d.timed.isNotEmpty()) {
                         Header("Programma")
@@ -161,7 +205,7 @@ fun TasksAppWidget(widget: TasksAppWidget) {
                             val b = a + t.durationMin
                             end?.let { e -> if (a - e >= 30) Gap(a - e) }
                             if (!nowShown && now < a) { nowShown = true; NowLine(now) { nowY = it } }
-                            Slot(t, a, b, now, tasks, open, done)
+                            Box(Modifier.mark("t/${t.id}")) { Slot(t, a, b, now, tasks, open, done) }
                             end = maxOf(end ?: 0, b)
                         }
                         if (!nowShown) NowLine(now) { nowY = it }
