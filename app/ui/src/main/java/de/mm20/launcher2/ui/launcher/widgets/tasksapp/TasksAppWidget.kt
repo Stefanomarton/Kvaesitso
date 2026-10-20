@@ -36,6 +36,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -124,13 +125,19 @@ fun TasksAppWidget(widget: TasksAppWidget) {
     val offset = with(density) { 72.dp.toPx() }          // where the now line rests, from the top
     val breakAt = with(density) { 56.dp.toPx() }
     var nowY by remember { mutableIntStateOf(-1) }
-    val anchor = { maxOf(0, (nowY - offset).toInt()) }
+    var curY by remember { mutableIntStateOf(-1) }        // top of the thing running now, -1 when none
+    val curKey = d.timed.lastOrNull { val a = it.start(); now in a until maxOf(a + it.durationMin, a + 1) }?.id
+    if (curKey == null) curY = -1
+    // the thing running now sits at the top, its title in sight; with none, the now line a little below the top
+    val anchor = { if (curY >= 0) maxOf(0, curY - with(density) { 4.dp.roundToPx() }) else maxOf(0, (nowY - offset).toInt()) }
+    var touched by remember { mutableLongStateOf(0L) }
     val marks = remember { HashMap<String, Int>() }      // top of each thing in the list
     val well = remember {
         object : NestedScrollConnection {
             var free = false
             var pull = 0f
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (source == NestedScrollSource.UserInput) touched = System.currentTimeMillis()
                 if (free || nowY < 0 || source != NestedScrollSource.UserInput) return Offset.Zero
                 pull += available.y
                 if (abs(pull) > breakAt) { free = true; haptic.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate); return Offset.Zero }
@@ -138,13 +145,24 @@ fun TasksAppWidget(widget: TasksAppWidget) {
             }
             override suspend fun onPreFling(available: Velocity): Velocity {
                 pull = 0f
+                touched = System.currentTimeMillis()
                 if (free || nowY < 0) return Velocity.Zero
                 scroll.animateScrollTo(anchor(), spring(dampingRatio = 0.55f, stiffness = Spring.StiffnessMediumLow))
                 return available
             }
         }
     }
-    LaunchedEffect(nowY >= 0) { if (nowY >= 0) scroll.scrollTo(anchor()) }
+    LaunchedEffect(nowY >= 0, curY) { if (nowY >= 0 && touched == 0L) scroll.scrollTo(anchor()) }
+    // left alone for a few seconds, it goes back to now by itself
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(1000)
+            if (nowY >= 0 && touched > 0 && System.currentTimeMillis() - touched > 6000 && !scroll.isScrollInProgress && abs(scroll.value - anchor()) > 4) {
+                well.free = false; well.pull = 0f; touched = 0L
+                scroll.animateScrollTo(anchor(), spring(dampingRatio = 0.8f, stiffness = Spring.StiffnessLow))
+            }
+        }
+    }
     LaunchedEffect(Unit) {
         var last = -1
         var side = 0
@@ -160,7 +178,7 @@ fun TasksAppWidget(widget: TasksAppWidget) {
 
     LaunchedEffect(null) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-            if (nowY >= 0) { well.free = false; well.pull = 0f; scroll.scrollTo(anchor()) }
+            if (nowY >= 0) { well.free = false; well.pull = 0f; touched = 0L; scroll.scrollTo(anchor()) }
             repository.requestSyncIfStale()
         }
     }
@@ -205,7 +223,7 @@ fun TasksAppWidget(widget: TasksAppWidget) {
                             val b = a + t.durationMin
                             end?.let { e -> if (a - e >= 30) Gap(a - e) }
                             if (!nowShown && now < a) { nowShown = true; NowLine(now) { nowY = it } }
-                            Box(Modifier.mark("t/${t.id}")) { Slot(t, a, b, now, tasks, open, done) }
+                            Box(Modifier.mark("t/${t.id}").then(if (t.id == curKey) Modifier.onGloballyPositioned { curY = it.positionInParent().y.toInt() } else Modifier)) { Slot(t, a, b, now, tasks, open, done) }
                             end = maxOf(end ?: 0, b)
                         }
                         if (!nowShown) NowLine(now) { nowY = it }
@@ -261,7 +279,11 @@ private fun Slot(t: TasksAppTask, a: Int, b: Int, now: Int, all: List<TasksAppTa
             Text(hm(a), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold, color = if (running) c.primary else c.onSurface)
             if (b > a) Text(hm(minOf(1440, b)), style = MaterialTheme.typography.labelSmall, color = c.outline)
         }
-        if (!t.isBlock) Column(Modifier.weight(1f)) {
+        if (!t.isBlock) Column(
+            Modifier.weight(1f).then(if (running) Modifier.padding(end = 12.dp).clip(RoundedCornerShape(14.dp))
+                .background(c.primary.copy(alpha = 0.14f)).border(2.dp, c.primary, RoundedCornerShape(14.dp)) else Modifier),
+        ) {
+            if (running) Text("ORA", Modifier.padding(start = 14.dp, top = 6.dp), style = MaterialTheme.typography.labelSmall, color = c.primary, fontWeight = FontWeight.Bold)
             TaskLine(t, open, done)
             for (k in all.inside(t.id)) TaskLine(k, open, done, depth = 1)
         } else {
